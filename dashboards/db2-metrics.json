@@ -1,1301 +1,1447 @@
 {
-    "__inputs": [
-        {
-            "name": "DS_PROMETHEUS",
-            "label": "Prometheus",
-            "description": "",
-            "type": "datasource",
-            "pluginId": "prometheus",
-            "pluginName": "Prometheus"
-        }
-    ],
-    "__elements": {},
-    "__requires": [
-        {
-            "type": "grafana",
-            "id": "grafana",
-            "name": "Grafana",
-            "version": "11.4.0"
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.4.6"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "tempo",
+      "name": "Tempo",
+      "version": "11.4.6"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
         },
-        {
-            "type": "datasource",
-            "id": "prometheus",
-            "name": "Prometheus",
-            "version": "1.0.0"
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 5,
+      "panels": [],
+      "title": "Introduction",
+      "type": "row"
+    },
+    {
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
         },
-        {
-            "type": "panel",
-            "id": "timeseries",
-            "name": "Time series",
-            "version": ""
-        }
-    ],
-    "annotations": {
-        "list": [
-            {
-                "builtIn": 1,
-                "datasource": {
-                    "type": "grafana",
-                    "uid": "-- Grafana --"
-                },
-                "enable": true,
-                "hide": true,
-                "iconColor": "rgba(0, 211, 255, 1)",
-                "name": "Annotations & Alerts",
-                "type": "dashboard"
+        "content": "# Welcome\n\nThis sample dashboard provides monitoring of Db2 subsystems.  \nPlease use the filters at the top to select:  \n- The Prometheus Data Source that contains the z/OS metrics  \n- The SYSPLEX that you are interested in  \n- The SYSTEM running on the previously selected SYSPLEX  \n- The Service (Db2 subsystem) running on the previously selected SYSTEM  \n\nThe values presented are auto-populated based on what is available to query",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.4.6",
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 6,
+      "panels": [],
+      "title": "Db2 Statistics",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "SQL Statements"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_select_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Select"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_insert_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Insert"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_update_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Update"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_delete_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Delete"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_describe_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Describe"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_prepare_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Prepare"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_open_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Open"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_close_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Close"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_merge_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Merge"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_fetch_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Fetch"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_inserted_rows_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Inserted Row"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_updated_rows_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Updated Row"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_deleted_rows_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Deleted Row"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_fetched_rows_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Fetched Row"
+              }
+            ]
+          },
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Update"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
         ]
-    },
-    "editable": true,
-    "fiscalYearStartMonth": 0,
-    "graphTooltip": 0,
-    "id": null,
-    "links": [],
-    "panels": [
-        {
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
-                        "drawStyle": "line",
-                        "fillOpacity": 0,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": false,
-                        "lineInterpolation": "linear",
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "auto",
-                        "spanNulls": false,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                        ]
-                    },
-                    "unit": "SQL Statements"
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_select_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Select"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_insert_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Insert"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_update_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Update"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_delete_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Delete"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_describe_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Describe"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_prepare_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Prepare"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_open_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Open"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_close_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Close"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_merge_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Merge"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_fetch_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Fetch"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_inserted_rows_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Inserted Row"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_updated_rows_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Updated Row"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_deleted_rows_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Deleted Row"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "sql_fetched_rows_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Fetched Row"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 12,
-                "w": 23,
-                "x": 0,
-                "y": 0
-            },
-            "id": 3,
-            "options": {
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true
-                },
-                "tooltip": {
-                    "mode": "single",
-                    "sort": "none"
-                }
-            },
-            "pluginVersion": "11.4.0",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_select_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "A",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_insert_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "B",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_update_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "C",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_delete_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "D",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_describe_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "E",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_prepare_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "F",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_open_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "G",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_close_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "H",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_merge_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "I",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_fetch_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "J",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_inserted_rows_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "K",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_updated_rows_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "L",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_deleted_rows_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "M",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "sql_fetched_rows_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "N",
-                    "useBackend": false
-                }
-            ],
-            "title": "SQL Statements",
-            "type": "timeseries"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 23,
+        "x": 0,
+        "y": 10
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
-        {
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
-                        "drawStyle": "line",
-                        "fillOpacity": 0,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": false,
-                        "lineInterpolation": "linear",
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "auto",
-                        "spanNulls": false,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                        ]
-                    }
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "total_suspends_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Total Suspends"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "deadlocks_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Deadlocks"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "lock_timeouts_ratio"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Lock Timeouts"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 10,
-                "w": 23,
-                "x": 0,
-                "y": 12
-            },
-            "id": 2,
-            "options": {
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true
-                },
-                "tooltip": {
-                    "mode": "single",
-                    "sort": "none"
-                }
-            },
-            "pluginVersion": "11.4.0",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "total_suspends_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "A",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "deadlocks_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "B",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "lock_timeouts_ratio{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "C",
-                    "useBackend": false
-                }
-            ],
-            "title": "Lock Manager Statistics",
-            "type": "timeseries"
-        },
-        {
-            "datasource": {
-                "type": "prometheus",
-                "uid": "prometheus"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
-                        "drawStyle": "line",
-                        "fillOpacity": 0,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": false,
-                        "lineInterpolation": "linear",
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "auto",
-                        "spanNulls": false,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                        ]
-                    }
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "ssas_tcb_time_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "SSAS TCB Time"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "dsas_tcb_time_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "DSAS TCB Time"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "irlm_tcb_time_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "IRLM TCB Time"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "ddf_tcb_time_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "DDF TCB Time"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "pre_srb_ssas_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Pre SRB SSAS"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "pre_srb_dsas_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Pre SRB DSAS"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "pre_srb_irlm_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Pre SRB IRLM"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "pre_srb_ddf_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Pre SRB DDF"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "nonpre_srb_ssas_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Non-Pre SRB SSAS"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "nonpre_srb_dsas_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Non-Pre SRB DSAS"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "nonpre_srb_irlm_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Non-Pre SRB IRLM"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "nonpre_srb_ddf_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Non-Pre SRB DDF"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "pre_srb_ziip_ssas_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Pre SRB ZIIP SSAS"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "pre_srb_ziip_dsas_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Pre SRB ZIIP DSAS"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "pre_srb_ziip_irlm_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Pre SRB ZIIP IRLM"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "pre_srb_ziip_dist_seconds"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Pre SRB ZIIP DIST"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 12,
-                "w": 23,
-                "x": 0,
-                "y": 22
-            },
-            "id": 1,
-            "options": {
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true
-                },
-                "tooltip": {
-                    "mode": "single",
-                    "sort": "none"
-                }
-            },
-            "pluginVersion": "11.4.0",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "code",
-                    "expr": "ssas_tcb_time_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "A",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "code",
-                    "expr": "dsas_tcb_time_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "B",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "irlm_tcb_time_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "C",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "ddf_tcb_time_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "D",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "pre_srb_ssas_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "E",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "pre_srb_dsas_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "F",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "pre_srb_irlm_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "G",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "pre_srb_ddf_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "H",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "nonpre_srb_ssas_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "I",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "nonpre_srb_dsas_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "J",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "nonpre_srb_irlm_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "K",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "nonpre_srb_irlm_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "L",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "nonpre_srb_ddf_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "M",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "pre_srb_ziip_ssas_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "N",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "pre_srb_ziip_dsas_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "O",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "pre_srb_ziip_irlm_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "P",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "builder",
-                    "expr": "pre_srb_ziip_dist_seconds{service_name=\"DB31\"}",
-                    "fullMetaSearch": false,
-                    "hide": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "legendFormat": "__auto",
-                    "range": true,
-                    "refId": "Q",
-                    "useBackend": false
-                }
-            ],
-            "title": "Address Space Statistics",
-            "type": "timeseries"
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
         }
-    ],
-    "schemaVersion": 40,
-    "tags": [],
-    "templating": {
-        "list": []
+      },
+      "pluginVersion": "11.4.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_select_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_insert_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_update_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "C",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_delete_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "D",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_describe_ratio{zos_sysplex=~\"$sysplex\", host_name=~\"$hostname\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "E",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_prepare_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "F",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_open_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "G",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_close_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "H",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_merge_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "I",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_fetch_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "J",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_inserted_rows_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "K",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_updated_rows_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "L",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_deleted_rows_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "M",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sql_fetched_rows_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "N",
+          "useBackend": false
+        }
+      ],
+      "title": "SQL Statements",
+      "type": "timeseries"
     },
-    "time": {
-        "from": "now-6h",
-        "to": "now"
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_suspends_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Suspends"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "deadlocks_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Deadlocks"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "lock_timeouts_ratio"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Lock Timeouts"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 23,
+        "x": 0,
+        "y": 22
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "total_suspends_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "deadlocks_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "lock_timeouts_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "C",
+          "useBackend": false
+        }
+      ],
+      "title": "Lock Manager Statistics",
+      "type": "timeseries"
     },
-    "timepicker": {},
-    "timezone": "browser",
-    "title": "DB2 Metrics",
-    "uid": "aej7is13yornka",
-    "version": 1,
-    "weekStart": ""
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ssas_tcb_time_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "SSAS TCB Time"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dsas_tcb_time_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "DSAS TCB Time"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "irlm_tcb_time_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "IRLM TCB Time"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ddf_tcb_time_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "DDF TCB Time"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pre_srb_ssas_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pre SRB SSAS"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pre_srb_dsas_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pre SRB DSAS"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pre_srb_irlm_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pre SRB IRLM"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pre_srb_ddf_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pre SRB DDF"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "nonpre_srb_ssas_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Non-Pre SRB SSAS"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "nonpre_srb_dsas_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Non-Pre SRB DSAS"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "nonpre_srb_irlm_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Non-Pre SRB IRLM"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "nonpre_srb_ddf_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Non-Pre SRB DDF"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pre_srb_ziip_ssas_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pre SRB ZIIP SSAS"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pre_srb_ziip_dsas_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pre SRB ZIIP DSAS"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pre_srb_ziip_irlm_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pre SRB ZIIP IRLM"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pre_srb_ziip_dist_seconds"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pre SRB ZIIP DIST"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 23,
+        "x": 0,
+        "y": 32
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "ssas_tcb_time_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "dsas_tcb_time_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "irlm_tcb_time_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "C",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "ddf_tcb_time_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "D",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "pre_srb_ssas_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "E",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "pre_srb_dsas_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "F",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "pre_srb_irlm_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "G",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "pre_srb_ddf_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "H",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "nonpre_srb_ssas_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "I",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "nonpre_srb_dsas_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "J",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "nonpre_srb_irlm_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "K",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "nonpre_srb_irlm_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "L",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "nonpre_srb_ddf_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "M",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "pre_srb_ziip_ssas_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "N",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "pre_srb_ziip_dsas_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "O",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "pre_srb_ziip_irlm_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "P",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "pre_srb_ziip_dist_seconds{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\", service_name=~\"$subsystemName\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "Q",
+          "useBackend": false
+        }
+      ],
+      "title": "Address Space Statistics",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 40,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "description": "Selects the Prometheus data source which contains IBM Z metrics",
+        "label": "Prometheus DataSource",
+        "name": "promDataSource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${promDataSource}"
+        },
+        "definition": "label_values({zos_smf_type=~\"zOS-IZOC_DB2_.*\"},zos_sysplex)",
+        "description": "The IBM Z SYSPLEX(es) to filter on",
+        "label": "SYSPLEX",
+        "multi": true,
+        "name": "sysplex",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values({zos_smf_type=~\"zOS-IZOC_DB2_.*\"},zos_sysplex)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values({zos_sysplex=~\"$sysplex\", zos_smf_type=~\"zOS-IZOC_DB2_.*\"},service_namespace)",
+        "description": "The IBM Z system SYSTEM(s) that are available on the SYSPLEX(es) chosen to filter on",
+        "label": "SYSTEM",
+        "multi": true,
+        "name": "system",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values({zos_sysplex=~\"$sysplex\", zos_smf_type=~\"zOS-IZOC_DB2_.*\"},service_namespace)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${promDataSource}"
+        },
+        "definition": "label_values({service_namespace=~\"$system\", zos_smf_type=~\"zOS-IZOC_DB2_.*\"},service_name)",
+        "description": "The IBM Z subsystem name that is available on the SYSPLEX(es) and SYSTEM(s) chosen",
+        "label": "Service",
+        "multi": true,
+        "name": "subsystemName",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values({service_namespace=~\"$system\", zos_smf_type=~\"zOS-IZOC_DB2_.*\"},service_name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "DB2 Metrics",
+  "uid": "aej7is13yornka",
+  "version": 5,
+  "weekStart": ""
 }
