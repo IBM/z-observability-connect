@@ -1,42 +1,73 @@
-# ZOC Sample Dashboards
+# ZOC Telemetry Controller Grafana Dashboards
 
-This repo provides sample Grafana dashboards that can be used to validate and visualize data from a successful installation of the ZOC Telemetry Controller.
+Sample Grafana dashboards for visualizing and validating ZOC Telemetry Controller data. Dashboards located in `dashboards/` directory.
 
-## Prerequisites
+## Quick Start with Docker Compose
+
+### Prerequisites
 
 - [Z Observability Connect Telemetry Controller](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=z-observability-connect-overview)
-- [Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/installation/) (Dashboards tested with Grafana 11.4.6)
+- Docker/Podman with Compose
+
+### Deployment
+
+#### 1. Clone repository
+```bash
+git clone git@github.com:IBM/zoc-telemetry-controller-assets.git
+```
+
+#### 2. Setup Tempo storage
+```bash
+sudo mkdir -p /var/tempo
+sudo chown -R 10001:10001 /var/tempo
+```
+
+#### 3. Configure Prometheus scrape targets
+
+ZOC Telemetry Controller exposes two metric endpoints:
+- z/OS metrics (default port: 30889 or 31889)
+- Internal telemetry metrics (default port: 30888 or 31888)
+
+Note: 30 based ports will be used if you have deployed with Helm. 31 based ports will be used if you have deployed with the telemetryctl CLI tool.
+
+Edit `config/tools/prometheus.yml` and replace `<telemetry-controller-fqdn>:<zos-metrics-port>` and `<telemetry-controller-fqdn>:<internal-metrics-port>` with actual values.
+
+#### 4. Deploy stack
+
+Docker:
+```bash
+docker compose up -d
+```
+
+Podman:
+```bash
+podman-compose up -d
+```
+
+#### 5. Access and configure
+
+Access Grafana at `http://localhost:3000`.
+
+Configure ZOC Telemetry Controller to send:
+- OTLP gRPC traces to `http://<grafana-vm-endpoint>:4317`
+- OTLP HTTP logs to `http://<grafana-vm-endpoint>:3100/otlp`
+
+## Import to Existing Grafana
+
+### Prerequisites
+
+- [Z Observability Connect Telemetry Controller](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=z-observability-connect-overview)
+- [Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/installation/) (tested with 11.4.6)
 - [Loki](https://grafana.com/docs/loki/latest/setup/install/)
 - [Prometheus](https://prometheus.io/docs/prometheus/latest/installation/)
 
-## Using the dashboards
+### Setup
 
-### Available Dashboards
+1. Configure datasources ([Prometheus](https://grafana.com/docs/grafana/latest/datasources/prometheus/), [Loki](https://grafana.com/docs/grafana/latest/datasources/loki/))
+2. Import dashboards via [UI](https://grafana.com/docs/grafana-cloud/visualizations/dashboards/build-dashboards/import-dashboards/) or [provisioning](https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards)
 
-ZOC currently provides sample dashboards to view z/OS metrics and logs, along with internal metrics of the ZOC Telemetry Controller. The dashboards are located in the `dashboards/` directory.
+### Notes
 
-### Importing Dashboards
-
-You can add the dashboards to your Grafana instance in two ways:
-1. [Importing Grafana Dashboards](https://grafana.com/docs/grafana-cloud/visualizations/dashboards/build-dashboards/import-dashboards/)
-2. [Provisioning Grafana Dashboards](https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards) 
-
-### Datasource Configuration
-
-Configure datasources in Grafana before importing dashboards:
-
-- **Prometheus**: [Configuration Guide](https://grafana.com/docs/grafana/latest/datasources/prometheus/)
-- **Loki**: [Configuration Guide](https://grafana.com/docs/grafana/latest/datasources/loki/)
-
-### Important Notes
-
-- Datasource UIDs: Dashboard JSON files contain hardcoded datasource UIDs. If your datasource UIDs differ, you may need to:
-  - Update the datasource selection during import, OR
-  - Edit the JSON file and replace the `datasource` UID values with your actual datasource UIDs
-  
-- Data Availability: Dashboards will only display data if:
-  - ZOC Telemetry Controller is properly configured and running
-  - Metrics/logs are being exported to Prometheus/Loki
-  - The datasources are correctly configured in Grafana
-
-- Customization: After import, you can customize dashboards to fit your specific monitoring needs by entering edit mode (click dashboard settings → Edit)
+- **Datasource UIDs**: Dashboard JSONs contain hardcoded UIDs. Update during import or edit JSON `datasource` fields to match your UIDs.
+- **Data availability**: Requires ZOC Telemetry Controller running and exporting to Prometheus/Loki with correct datasource configuration.
+- **Customization**: Edit dashboards via dashboard settings → Edit.

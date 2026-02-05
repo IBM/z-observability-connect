@@ -1,15 +1,5 @@
 services:
 
-  init:
-    image: busybox:latest
-    user: root
-    entrypoint:
-      - "chown"
-      - "10001:10001"
-      - "/var/tempo"
-    volumes:
-      - ./tempo-data:/var/tempo:Z
-
   tempo:
     image: grafana/tempo:main-bd4e88a
     hostname: tempo
@@ -22,10 +12,8 @@ services:
     ports:
       - "14268"  # jaeger ingest
       - "3200"   # tempo
-      - "30317:4317"  # otlp grpc
-      - "30318:4318"  # otlp http
-    depends_on:
-      - init
+      - "4317:4317"  # otlp grpc
+      - "4318:4318"  # otlp http
       
   prometheus:
     image: quay.io/prometheus/prometheus:v3.9.1
