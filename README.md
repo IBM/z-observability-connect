@@ -4,9 +4,9 @@ Sample Grafana dashboards are provided to help visualize and validate telemetry 
 
 To view these dashboards, several prerequisites must be in place, including Grafana, Prometheus, Tempo, and Loki. The instructions below outline two possible scenarios, depending on whether you already have these prerequisites in place.
 
-For either scenario, you should first install the ZOC components Telemetry Controller and Common Data Provider, configured with the z/OS metrics and logs policy.
+For either scenario, you should first install the ZOC Telemetry Controller and Common Data Provider, configured with the ZOC metrics and logs policy.
 
-## Scenario 1: Deploy Grafana, Loki, Tempo, Prometheus, and ZOC Dashboards
+## Scenario 1: Deploy Grafana Stack (Grafana, Loki, Tempo, Prometheus, and ZOC Dashboards)
 
 Use this scenario if you do not already have an existing Granfana stack. It guides you through deploying Grafana, Loki, Tempo, and Prometheus along with the ZOC dashboards.
 
@@ -32,7 +32,7 @@ sudo mkdir -p /var/tempo
 sudo chown -R 10001:10001 /var/tempo
 ```
 
-#### 3. Configure Prometheus scrape targets
+#### 3. Configure Prometheus to scrape targets
 
 The ZOC Telemetry Controller exposes two Prometheus-style metric endpoints.
 
@@ -54,7 +54,7 @@ NOTE:Telemetry Controller Deployments created with Helm use ports beginning with
 Edit `config/tools/prometheus.yml` and replace `<telemetry-controller-fqdn>:<zos-metrics-port>` and `<telemetry-controller-fqdn>:<internal-metrics-port>` with the appropriate values based on the Telemetry Controller deployement location and configured ports. 
 
 
-#### 4. Deploy stack
+#### 4. Deploy the Grafana stack
 
 Before running this step, ensure you are in the `zoc-telemetry-controller-assets` directory, as Docker or Podman will need access to `zoc-telemetry-controller-assets/docker-compose.yaml`.
 
@@ -78,7 +78,7 @@ This is done by updating `telemetry-controller/config/exporters.yaml` and restar
 
 #### 6. Access Grafana
 
-To access the Grafana UI, point your browser to `http://<fqdn>:3000`.
+To access the Grafana UI, point your browser to `http://<fqdn>:3000`. The fqdn is the fully qualified hostname of the machine Grafana is deployed on. 
 
 ## Scenario 2: Import ZOC Dashboards into an Existing Grafana Deployment
 
