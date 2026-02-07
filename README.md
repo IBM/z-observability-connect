@@ -95,7 +95,7 @@ After updating `exporters.yaml`, stop and then restart the Telemetry Controller.
 
 #### 6. Access Grafana
 
-To access the Grafana UI, point your browser to `http://<fqdn>:3000`. The fqdn is the fully qualified hostname of the machine Grafana is deployed on. 
+To access the Grafana UI, point your browser to `http://<fqdn>:3000`. The FQDN is the fully qualified hostname of the machine Grafana is deployed on. 
 
 ## Scenario 2: Import ZOC Dashboards into an Existing Grafana Deployment
 
