@@ -12,7 +12,9 @@ Use this scenario if you do not already have an existing Granfana stack. It guid
 
 ### Prerequisites
 
-A docker-compose.yaml file is included that contains deployment definitions for Grafana, Loki, and Prometheus. Using it requires either Docker Compose or Podman Compose to be available on your system.
+A docker-compose.yaml file is included in this repository that contains deployment definitions for Grafana, Loki, and Prometheus. Using it requires either Docker Compose or Podman Compose to be available on your system.
+
+Refer to these links for guidance on deploying Docker or Podman with Compose:
 
 - [Docker](https://docs.docker.com/engine/install/)
 - [Podman](https://developers.redhat.com/blog/2018/08/29/intro-to-podman#)
@@ -27,6 +29,8 @@ git clone git@github.com:IBM/zoc-telemetry-controller-assets.git
 
 #### 2. Required Setup For Tempo storage
 
+The following is required to allow the volume defined for Tempo in docker-compose.yaml to be initialized properly.
+
 ```bash
 sudo mkdir -p /var/tempo
 sudo chown -R 10001:10001 /var/tempo
@@ -34,24 +38,26 @@ sudo chown -R 10001:10001 /var/tempo
 
 #### 3. Configure Prometheus to scrape targets
 
-The ZOC Telemetry Controller exposes two Prometheus-style metric endpoints.
+The ZOC Telemetry Controller exposes two Prometheus-style metric endpoints. Before deploying the Grafana stack, update `config/tools/prometheus.yml` to point Prometheus to the correct endpoints. You must replace:
 
-1. z/OS metrics endpoint
+* `<telemetry-controller-fqdn>:<zos-metrics-port>`
+* `<telemetry-controller-fqdn>:<internal-metrics-port>`
 
-- Default ports:
-    - 30889 when Telemetry Controller is deployed using Helm
-    - 31889 when  Telemetry Controller is deployed using the telemetryctl CLI
-- Purpose: Provides z/OS-related operational and performance metrics.
+Use the information below to determine the correct ports based on how the Telemetry Controller was deployed.
 
-2. Internal telemetry metrics endpoint
-- Default ports:
-    - 30888 when  Telemetry Controller is deployed using Helm
-    - 31888 when  Telemetry Controller is deployed using the telemetryctl CLI
-- Purpose: Provides internal controller telemetry such as component health and processing statistics.
+1. z/OS metrics endpoint  
+   - Default ports:  
+     - 30889 when the Telemetry Controller is deployed using Helm  
+     - 31889 when the Telemetry Controller is deployed using the telemetryctl CLI  
+   - Purpose: Provides z/OS-related operational and performance metrics.
 
-NOTE:Telemetry Controller Deployments created with Helm use ports beginning with 30xxx.Telemetry Controller Deployments created with telemetryctl CLI use ports beginning with 31xxx.
+2. Internal telemetry metrics endpoint  
+   - Default ports:  
+     - 30888 when the Telemetry Controller is deployed using Helm  
+     - 31888 when the Telemetry Controller is deployed using the telemetryctl CLI  
+   - Purpose: Provides internal controller telemetry such as component health and processing statistics.
 
-Edit `config/tools/prometheus.yml` and replace `<telemetry-controller-fqdn>:<zos-metrics-port>` and `<telemetry-controller-fqdn>:<internal-metrics-port>` with the appropriate values based on the Telemetry Controller deployement location and configured ports. 
+Note: Telemetry Controller deployments created with Helm use ports beginning with 30xxx. Deployments created with the telemetryctl CLI use ports beginning with 31xxx.
 
 
 #### 4. Deploy the Grafana stack
@@ -70,11 +76,12 @@ podman-compose up -d
 
 #### 5. Update Telemetry Controller to Send Traces and Logs
 
-Configure ZOC Telemetry Controller to send:
+Now that your Grafana stack is ready, you should configure the ZOC Telemetry Controller to export traces and logs to Grafana. This is done by updating `telemetry-controller/config/exporters.yaml` with the following settings:
+
 - OTLP gRPC traces to `http://<grafana-vm-endpoint>:4317`
 - OTLP HTTP logs to `http://<grafana-vm-endpoint>:3100/otlp`
 
-This is done by updating `telemetry-controller/config/exporters.yaml` and restarting the Telemetry Controller.
+After updating `exporters.yaml`, stop and then restart the Telemetry Controller.
 
 #### 6. Access Grafana
 
@@ -82,7 +89,9 @@ To access the Grafana UI, point your browser to `http://<fqdn>:3000`. The fqdn i
 
 ## Scenario 2: Import ZOC Dashboards into an Existing Grafana Deployment
 
-Use this scenario if you already have Grafana, Loki, Tempo, and Prometheus running and want to add the ZOC dashboards to your existing environment. 
+Use this scenario if you already have Grafana, Loki, Tempo, and Prometheus running and want to add the ZOC dashboards to your existing environment.
+
+If you encounter any issues, it is recommended that you review the docker-compose.yaml from Scenario 1, install Grafana using the Scenario 1 instructions, and compare your existing Grafana stack to the one created with the included docker-compose.yaml.
 
 ### Prerequisites
 
