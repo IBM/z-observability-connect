@@ -4,7 +4,7 @@ Sample Grafana dashboards are provided to help visualize and validate telemetry 
 
 To view these dashboards, several prerequisites must be in place, including Grafana, Prometheus, Tempo, and Loki. The instructions below outline two possible scenarios, depending on whether you already have these prerequisites in place.
 
-For either scenario, you should first install the ZOC Telemetry Controller and Common Data Provider, configured with the ZOC metrics and logs policy.
+For either scenario, you should first install the ZOC Telemetry Controller and Common Data Provider, configured with the ZOC metrics and logs policy. For reference on deploying Telmetry Controller or CDP metrics and log policies, refer to [Z Observability Connect documentation](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=telemetry-controller). 
 
 ## Scenario 1: Deploy Grafana Stack (Grafana, Loki, Tempo, Prometheus, and ZOC Dashboards)
 
