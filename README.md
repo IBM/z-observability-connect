@@ -76,10 +76,20 @@ podman-compose up -d
 
 #### 5. Update Telemetry Controller to Send Traces and Logs
 
-Now that your Grafana stack is ready, you should configure the ZOC Telemetry Controller to export traces and logs to Grafana. This is done by updating `telemetry-controller/config/exporters.yaml` with the following settings:
+Now that your Grafana stack is ready, you should configure the ZOC Telemetry Controller to export traces and logs to Grafana. This is done by updating `telemetry-controller/config/exporters.yaml`.
 
-- OTLP gRPC traces to `http://<grafana-vm-endpoint>:4317`
-- OTLP HTTP logs to `http://<grafana-vm-endpoint>:3100/otlp`
+For logs, uncomment the `otlphttp` section and update the endpoint to `http://<loki-backend>:3100/otlp`. The value for `<loki-backend>` should be the fully qualified domain name (FQDN) of the machine where the Grafana stack is deployed.
+
+For traces, add a section to `exporters.yaml` to configure trace export to Tempo in the Grafana stack. Here is an example:
+
+```
+otlp/tempo:
+    pipelines: ["traces"]
+    endpoint: "http://<grafana-vm-endpoint>:30317"
+    tls:
+      insecure: true
+```
+`grafana-vm-endpoint` is the FQDN of the machine where you deployed the Grafana stack. Port 30317 is the default gRPC port exposed by the Telemetry Controller.
 
 After updating `exporters.yaml`, stop and then restart the Telemetry Controller.
 
