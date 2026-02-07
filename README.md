@@ -78,9 +78,9 @@ podman-compose up -d
 
 Now that your Grafana stack is ready, you should configure the ZOC Telemetry Controller to export traces and logs to Grafana. This is done by updating `telemetry-controller/config/exporters.yaml`.
 
-For logs, uncomment the `otlphttp` section and update the endpoint to `http://<loki-backend>:3100/otlp`. The value for `<loki-backend>` should be the fully qualified domain name (FQDN) of the machine where the Grafana stack is deployed.
+For logs, uncomment the `otlphttp` section and update the endpoint `http://<loki-backend>:3100/otlp`. The value for `<loki-backend>` should be the fully qualified domain name (FQDN) of the machine where the Grafana stack is deployed.
 
-For traces, add a section to `exporters.yaml` to configure trace export to Tempo in the Grafana stack. Here is an example:
+For traces, add a section to `exporters.yaml` to configure traces to export to Tempo in the Grafana stack. Here is an example:
 
 ```
 otlp/tempo:
