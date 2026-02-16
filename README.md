@@ -88,7 +88,7 @@ otlp/tempo:
 
 You must run both stop and install for the configuration to take effect.
 
-#### 6. Access Grafana
+#### 5. Access Grafana
 
 To access the Grafana UI, point your browser to `http://<fqdn>:3000`. The FQDN is the fully qualified hostname of the machine Grafana is deployed on. 
 
