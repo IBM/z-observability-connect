@@ -27,16 +27,7 @@ Refer to these links for guidance on deploying Docker or Podman with Compose:
 git clone git@github.com:IBM/zoc-telemetry-controller-assets.git
 ```
 
-#### 2. Required Setup For Tempo storage
-
-The following is required to allow the volume defined for Tempo in docker-compose.yaml to be initialized properly.
-
-```bash
-sudo mkdir -p /var/tempo
-sudo chown -R 10001:10001 /var/tempo
-```
-
-#### 3. Configure Prometheus to scrape targets
+#### 2. Configure Prometheus to scrape targets
 
 The ZOC Telemetry Controller exposes two Prometheus-style metric endpoints. Before deploying the Grafana stack, update `config/tools/prometheus.yml` to point Prometheus to the correct endpoints. You must replace:
 
@@ -60,7 +51,7 @@ Use the information below to determine the correct ports based on how the Teleme
 Note: Telemetry Controller deployments created with Helm use ports beginning with 30xxx. Deployments created with the telemetryctl CLI use ports beginning with 31xxx.
 
 
-#### 4. Deploy the Grafana stack
+#### 3. Deploy the Grafana stack
 
 Before running this step, ensure you are in the `zoc-telemetry-controller-assets` directory, as Docker or Podman will need access to `zoc-telemetry-controller-assets/docker-compose.yaml`.
 
@@ -74,7 +65,7 @@ Podman:
 podman-compose up -d
 ```
 
-#### 5. Update Telemetry Controller to Send Traces and Logs
+#### 4. Update Telemetry Controller to Send Traces and Logs
 
 Now that your Grafana stack is ready, you should configure the ZOC Telemetry Controller to export traces and logs to Grafana. This is done by updating `telemetry-controller/config/exporters.yaml`.
 
@@ -91,7 +82,11 @@ otlp/tempo:
 ```
 `grafana-vm-endpoint` is the FQDN of the machine where you deployed the Grafana stack. Port 30317 is the default gRPC port exposed by the Telemetry Controller.
 
-After updating `exporters.yaml`, stop and then restart the Telemetry Controller.
+**IMPORTANT:** After updating `exporters.yaml`, you will need to redeploy the Telemetry Controller:
+* `./telemetryctl stop`
+* `./telemetryctl install`
+
+You must run both stop and install for the configuration to take effect.
 
 #### 6. Access Grafana
 
