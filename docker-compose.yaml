@@ -1,7 +1,7 @@
 services:
 
   tempo:
-    image: grafana/tempo:main-bd4e88a
+    image: grafana/tempo:2.9.0
     hostname: tempo
     container_name: tempo
     restart: always
