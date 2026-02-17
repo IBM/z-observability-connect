@@ -24,7 +24,7 @@ Refer to these links for guidance on deploying Docker or Podman with Compose:
 
 #### 1. Clone repository
 ```bash
-git clone git@github.com:IBM/zoc-telemetry-controller-assets.git
+git clone https://github.com/IBM/zoc-telemetry-controller-assets.git
 ```
 
 #### 2. Configure Prometheus to scrape targets
