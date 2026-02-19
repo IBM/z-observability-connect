@@ -8,7 +8,7 @@ For either scenario, you should first install the ZOC Telemetry Controller and C
 
 ## Scenario 1: Deploy Grafana Stack (Grafana, Loki, Tempo, Prometheus, and ZOC Dashboards)
 
-Use this scenario if you do not already have an existing Granfana stack. It guides you through deploying Grafana, Loki, Tempo, and Prometheus along with the ZOC dashboards.
+Use this scenario if you do not already have an existing Grafana stack. It guides you through deploying Grafana, Loki, Tempo, and Prometheus along with the ZOC dashboards.
 
 ### Prerequisites
 
