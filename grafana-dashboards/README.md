@@ -80,7 +80,7 @@ otlp/tempo:
     tls:
       insecure: true
 ```
-`grafana-vm-endpoint` is the FQDN of the machine where you deployed the Grafana stack. Port 4317 is the default gRPC port exposed by Tempo.
+`tempo-vm-endpoint` is the FQDN of the machine where you deployed the Grafana stack. Port 4317 is the default gRPC port exposed by Tempo.
 
 **IMPORTANT:** After updating `exporters.yaml`, you will need to redeploy the Telemetry Controller:
 * `./telemetryctl stop`
