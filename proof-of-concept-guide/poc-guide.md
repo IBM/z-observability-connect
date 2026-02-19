@@ -293,7 +293,7 @@ Follow the [steps from the online documentation](https://www.ibm.com/docs/en/zap
 
 ## Sample Grafana Dashboards (Optional)
 
-To visualize trace, metric, and log data in an OpenTelemetry backend, sample Grafana dashboards along with instructions to deploy a complete Grafana stack are provided on the IBM opensource github page. You should download and follow the README instructions at [z-observability-connect](https://github.com/IBM/z-observability-connect/grafana-dashboards).
+To visualize trace, metric, and log data in an OpenTelemetry backend, sample Grafana dashboards along with instructions to deploy a complete Grafana stack are provided on the IBM opensource github page. You should download and follow the README instructions at [z-observability-connect](https://github.com/IBM/z-observability-connect/tree/main/grafana-dashboards).
 
 **Note:** Once Grafana is setup, the README will provide instructions to update and restart the Telemetry Controller to send trace and log data to Grafana and populate the sample dashboards. 
 
