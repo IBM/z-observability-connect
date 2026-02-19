@@ -126,18 +126,42 @@ For evaluation of POC purposes, using a lightweight Kubernetes deployment will m
 
 OPTIONAL: If you need to handle larger amounts of traffic, consider the additional [deployment resource requirements](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=deployment-cluster-resource-planning-telemetry-controller).
 
+Once you have a Kubernetes distribution installed, you can verify it by running:
+
+```
+kubectl get pods -A
+```
+If Kubernetes is installed correctly, you will see pods in the `kube-system` namespace. A status of `Running` or `Completed` indicates a successful installation.
+
+
 ### Helm
 
 [Helm](https://helm.sh/docs/intro/install) is a prerequisite for deployment and should be installed on the main node of the cluster. The following [Helm versions are supported](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=requirements-additional-software#topic_xr5_2g1_chc__title__7). 
 
+You can verify Helm by running:
+
+```
+helm version
+```
+
+If Helm is installed correctly, the command will return the installed Helm version. 
+
 ### Download Fix Central Package
 
-The installation program and configuration files are available for [download on Fix Central](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=deployment-system-requirements#concept_x4w_5cg_3gc__title__3). From this page, click on the IBM Fix Central link to access Fix Central and download the latest package that starts with "TelemetryController".  This package is required for any installation. Once downloaded, extract the Telemetry Controller package.
+The installation program and configuration files are available for [download on Fix Central](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=deployment-system-requirements#concept_x4w_5cg_3gc__title__3). From this page, click on the IBM Fix Central link to access Fix Central and download the latest package that starts with "TelemetryController". 
 
-Here is an example. Substitute the appropriate architecture and release values according to the downloaded tar.gz file:
+When accessing the Fix Central page, if you are not brought directly to the product page, you can locate the correct download using the following selections:
+
+**Product selector:** `IBM Z Observability Connect`  
+**Installed Version:** `7.1.0`  
+**Platform:** `Linux 64-bit,x86_64` or `Linux390 64-bit`
+
+This package is required for any installation. Once downloaded, extract the Telemetry Controller package. Here is an example—substitute the appropriate architecture and release values based on the downloaded tar.gz file:
+
 ```
 tar -xvf telemetry-controller-<architecture>-<release>.tar.gz
 ```
+
 ### Open External Ports
 
 Review the External ports listed in Table1 Default ports on the [following page](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=deployment-prerequisites-telemetry-controller#tasktask_xf5_4fb_1hc__steps__1). 
