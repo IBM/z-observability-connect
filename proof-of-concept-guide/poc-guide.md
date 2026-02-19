@@ -37,10 +37,9 @@ Z Observability Connect supports two main paths to instrument z/OS services for 
 
 If your z/OS subsystems are at supported levels, you can use the native emissions Open Telemetry support for trace data. Review the required subsystem levels here:  [required subsystem levels](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=requirements-additional-software#topic_xr5_2g1_chc__title__8). 
 
-To use native emissions Open Telemetry trace data, **you must install the Z Observability Connect Telemetry Controller** to receive, process, and export OpenTelemetry trace data to an OTel‑compatible backend observability tool. Follow the instructions for the Telemetry Controller below.  
-You do not need to install the ZAPM Trace Components.
+To use native emissions Open Telemetry trace data, **you must install the Z Observability Connect Telemetry Controller** to receive, process, and export OpenTelemetry trace data to an OTel‑compatible observability backend. Follow the instructions for the Telemetry Controller below. 
 
-The native subsystems emissions requires the Telemetry Controller to be installed. 
+The native subsystems emissions requires the Telemetry Controller to be installed. You do not need to install the ZAPM Trace Components.
 
 #### ZAPM Trace Components
 
@@ -54,7 +53,7 @@ Supported backends include:
 
 ### Open Telemetry Metrics and Logs
 
-Z Observability Connect includes the ability to stream System Management Facility (SMF) record and z/OS syslog data collection. 
+Z Observability Connect includes the ability to stream System Management Facility (SMF) records and z/OS syslog data collection. 
 
 To collect and process Open Telemetry Metrics and Logs, install the following:
 
