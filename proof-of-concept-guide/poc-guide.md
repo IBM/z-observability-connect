@@ -98,7 +98,7 @@ If you plan to run the ZAPM Distributed Gateway and Grafana on the same machine,
 
 When considering permission and allocating volumes, consider default locations for some of the depedencies you may select:
 
-* MicroK8s: default location are `/snap/microk8s` and `/var/snap/microk8s/current/`
+* MicroK8s: default locations are `/snap/microk8s` and `/var/snap/microk8s/current/`
 * K3s: default locations are `/var/lib/rancher/k3s/` and `/etc/rancher/k3s/k3s.yaml`
 * Docker: default locations are `/usr/bin/docker` and `/var/lib/docker/`
 * Podman: default location for Rootfull installation is `/var/lib/containers/`
