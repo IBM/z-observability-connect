@@ -159,7 +159,7 @@ When accessing the Fix Central page, if you are not brought directly to the prod
 This package is required for any installation. Once downloaded, extract the Telemetry Controller package. Here is an example—substitute the appropriate architecture and release values based on the downloaded tar.gz file:
 
 ```
-tar -xvf telemetry-controller-<architecture>-<release>.tar.gz
+tar -xvf TelemetryController-<release>-<architecture>.tar.gz
 ```
 
 ### Open External Ports
