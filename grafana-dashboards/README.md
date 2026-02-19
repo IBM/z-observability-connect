@@ -76,11 +76,11 @@ For traces, add a section to `exporters.yaml` to configure traces to export to T
 ```
 otlp/tempo:
     pipelines: ["traces"]
-    endpoint: "http://<grafana-vm-endpoint>:30317"
+    endpoint: "http://<tempo-vm-endpoint>:4317"
     tls:
       insecure: true
 ```
-`grafana-vm-endpoint` is the FQDN of the machine where you deployed the Grafana stack. Port 30317 is the default gRPC port exposed by the Telemetry Controller.
+`grafana-vm-endpoint` is the FQDN of the machine where you deployed the Grafana stack. Port 4317 is the default gRPC port exposed by Tempo.
 
 **IMPORTANT:** After updating `exporters.yaml`, you will need to redeploy the Telemetry Controller:
 * `./telemetryctl stop`
