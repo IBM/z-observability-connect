@@ -290,11 +290,19 @@ kubectl logs otel-collector-0 -n ibm-zoc
 
 The Common Data Provider (CDP) can be used to collect SMF records and log data and stream that data to Kafka. Z Observability Connect provides CDP policies and configuration for key metrics, including CICS, DB2, IMS, MQ, and SYSLOG data.
 
-To send and process metric and log data, the Telemetry Controller component is required. The Telemetry Controller receives the data from CDP, converts it into OTLP spans/metrics data points/log records, and exports it to any OpenTelemetry‑compatible backend
+To send and process metric and log data, the Telemetry Controller component is required. The Telemetry Controller receives the data from CDP, converts it into OTLP spans/metrics data points/log records, and exports it to any OpenTelemetry‑compatible backend. 
+Supported metrics data includes CICS, DB2, and MQ SMF record types, as well as IMS log records. Supported log data includes SYSLOG and job logs.
+
+For more details, refer to:
+
+ * [Supported Metrics](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=collector-supported-smf-record-types) 
+ * [Supported Logs](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=collector-supported-logs)
 
 If you don't have the Common Data Provider installed already, follow these [installation instructions](https://www.ibm.com/docs/en/zcdp/5.1.0?topic=installing-z-common-data-provider). 
 
 Follow the [steps from the online documentation](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=deployment-z-common-data-provider) to configure the collection of SMF metrics and logs and to install the CDP configuration files and policies.
+
+Refer to the [IBM Z Observability Connect V7.1 Recommended Maintenance](https://www.ibm.com/support/pages/node/7256540) for the latest updates. 
 
 
 ## Sample Grafana Dashboards (Optional)
@@ -308,3 +316,5 @@ To visualize trace, metric, and log data in an OpenTelemetry backend, sample Gra
 The ZAPM Trace Components are required for native support of Instana spans or AppDynamics Singularity headers. They can also be used to provide OpenTelemetry support as an alternative to the native emissions–based OTEL support when subsystems are not at supported levels.
 
 Review the [documentation for ZAPM Trace Components](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=components-zapm-trace-overview).
+
+Refer to the [IBM Z Observability Connect V7.1 Recommended Maintenance](https://www.ibm.com/support/pages/node/7256540) for the latest updates. 
