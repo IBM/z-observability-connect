@@ -62,9 +62,9 @@ To collect and process Open Telemetry Metrics and Logs, install the following:
 
 # Telemetry Controller
 
-The Telemetry Controller is required as the OpenTelemetry Collector for the following scenarios:
+The Telemetry Controller is required as the OpenTelemetry Collector for the following scenario:
 
-* CDP is streaming metrics and z/OS SYSLOG data to an OpenTelemetry‑compatible observability backend.
+* CDP is streaming SMF (e.g. metrics) or z/OS SYSLOG data that needs to be exported to an OpenTelemetry-compatible observability backend.
 
 It is also recommended to deploy the Telemetry Controller for any of the following scenarios:
 
