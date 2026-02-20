@@ -62,11 +62,17 @@ To collect and process Open Telemetry Metrics and Logs, install the following:
 
 # Telemetry Controller
 
-The Telemetry Controller should be deployed and used as the OpenTelemetry Collector for any of the following scenarios:
+The Telemetry Controller is required as the OpenTelemetry Collector for the following scenarios:
+
+* CDP is streaming metrics and z/OS SYSLOG data to an OpenTelemetry‑compatible observability backend.
+
+It is also recommended to deploy the Telemetry Controller for any of the following scenarios:
 
 * z/OS applications are being monitored through native subsystem emissions using OpenTelemetry.
 * z/OS applications are being monitored through the ZAPM Trace Components and are using OpenTelemetry as their telemetry protocol.
-* CDP is streaming metrics and z/OS SYSLOG data to be ingested by an OpenTelemetry‑compatible observability backend.
+
+ In addition to supporting CDP metrics and logs, the Telemetry Controller provides best practice guidance and a supported approach for an enterprise OpenTelemetry Collector deployment. This component will continue to be a key part of the Z Observability Connect architecture.
+
 
 ## Common Issues During a POC
 
