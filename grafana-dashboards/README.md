@@ -36,13 +36,13 @@ The ZOC Telemetry Controller exposes two Prometheus-style metric endpoints. Befo
 
 Use the information below to determine the correct ports based on how the Telemetry Controller was deployed.
 
-1. z/OS metrics endpoint  
+-  z/OS metrics endpoint  
    - Default ports:  
      - 30889 when the Telemetry Controller is deployed using Helm  
      - 31889 when the Telemetry Controller is deployed using the telemetryctl CLI  
    - Purpose: Provides z/OS-related operational and performance metrics.
 
-2. Internal telemetry metrics endpoint  
+- Internal telemetry metrics endpoint  
    - Default ports:  
      - 30888 when the Telemetry Controller is deployed using Helm  
      - 31888 when the Telemetry Controller is deployed using the telemetryctl CLI  
@@ -91,6 +91,42 @@ You must run both stop and install for the configuration to take effect.
 #### 5. Access Grafana
 
 To access the Grafana UI, point your browser to `http://<fqdn>:3000`. The FQDN is the fully qualified hostname of the machine Grafana is deployed on. 
+
+#### 6. Set Up Node Graph and Service Graph
+
+To enable Node Graph and Service Graph views for trace, navigate to the Grafana UI: `http://<fqdn>:3000`. 
+
+On the lefthand panel, go to `Connecton`->`Data Sources`. 
+
+![Data Sources](images/datasources.png)
+
+Click on `Tempo`, then scroll down to `Additional settings`. 
+
+![Additional Settings](images/additionalsettings.png)
+
+Under Service graph, upate the `Data Source` to be `Prometheus` and toggle `Enable node graph` to be enabled. 
+
+Scroll to the bottom of the page and select `Save & test`.
+
+#### 7. View Traces
+
+Click `Explore` and then select the 'Search' tab. 
+
+![Traces](images/traces.png)
+
+Click on a trace. 
+
+![View Trace](images/viewtrace.png)
+
+Open the `Node graph` section which is located above `Trace`. 
+
+![Node Graph](images/nodegraph.png)
+
+#### 7. View Sample Dashboard for Metrics and Logs
+
+To view the sample dashboards for Metrics & Logs, navigate to `Dashboards`.
+
+![Dashboards](images/dashboards.png)
 
 ## Scenario 2: Import ZOC Dashboards into an Existing Grafana Deployment
 
