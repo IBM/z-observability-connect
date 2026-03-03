@@ -122,7 +122,7 @@ Open the `Node graph` section which is located above `Trace`.
 
 ![Node Graph](images/nodegraph.png)
 
-#### 7. View Sample Dashboard for Metrics and Logs
+#### 7. View Sample Dashboards for Metrics and Logs
 
 To view the sample dashboards for Metrics & Logs, navigate to `Dashboards`.
 
