@@ -4,7 +4,7 @@ Welcome to the Z Observability Connect public asset page. Each available asset i
 
 ## Available Assets:
 
-### [Proof of Concept Guide](https://github.com/IBM/z-observability-connect/tree/main/proof-of-concept-guide/poc-guide.md)
+### [Proof of Concept Guide](https://github.com/IBM/z-observability-connect/blob/main/proof-of-concept-guide/poc-guide.md)
 A step-by-step, cookbook-style guide for setting up a Z Observability Connect Proof of Concept (PoC) in a non-production environment.
 
 ### [Grafana Sample Dashboards](https://github.com/IBM/z-observability-connect/tree/main/grafana-dashboards)
