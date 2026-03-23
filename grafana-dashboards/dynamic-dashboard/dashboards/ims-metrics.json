@@ -1,0 +1,1507 @@
+{
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "barchart",
+      "name": "Bar chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.4.6"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "tempo",
+      "name": "Tempo",
+      "version": "11.4.6"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 16,
+      "panels": [],
+      "title": "Introduction",
+      "type": "row"
+    },
+    {
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 15,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# Welcome\n\nThis sample dashboard provides monitoring of IMS subsystems.  \nPlease use the filters at the top to select:  \n- The Prometheus Data Source that contains the z/OS metrics  \n- The SYSPLEX that you are interested in  \n- The SYSTEM running on the previously selected SYSPLEX  \n\nThe values presented are auto-populated based on what is available to query.  \n**Currently, the resulting metrics that each panel shows is an aggregate of all services (all IMS regions).**",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.4.6",
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 9,
+      "panels": [],
+      "title": "Queue Pool Statistics",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${promDataSource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 0,
+        "y": 10
+      },
+      "id": 4,
+      "interval": "5m",
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.4.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "qp_qmgr_calls{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Number of calls to QMGR ",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${promDataSource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstclos_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTCLOS"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstget_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTGET"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstput_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTPUT"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstput1_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTPUT1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstinq_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTINQ"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 8,
+        "y": 10
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_qmgr_locates_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_QMGR_LOCATES",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "qp_qmgr_releases_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "QP_QMGR_RELEASES",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_qmgr_loc_alters_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_QMGR_LOC_ALTERS",
+          "range": true,
+          "refId": "C",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_purge_requests_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_PURGE_REQUESTS",
+          "range": true,
+          "refId": "D",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_translate_req_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_TRANSLATE_REQ ",
+          "range": true,
+          "refId": "E",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_read_requests_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_READ_REQUESTS",
+          "range": true,
+          "refId": "F",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_write_requests_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_WRITE_REQUESTS",
+          "range": true,
+          "refId": "G",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_purge_writes_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_PURGE_WRITES",
+          "range": true,
+          "refId": "H",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_purge_waits_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_PURGE_WAITS",
+          "range": true,
+          "refId": "I",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_buffer_waits_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_BUFFER_WAITS",
+          "range": true,
+          "refId": "J",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_decb_read_waits_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_DECB_READ_WAITS",
+          "range": true,
+          "refId": "K",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_decb_writewaits_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_DECB_WRITEWAITS",
+          "range": true,
+          "refId": "L",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_enqdeq_bfrwaits_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_ENQDEQ_BFRWAITS",
+          "range": true,
+          "refId": "M",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_buffer_repos_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_BUFFER_REPOS",
+          "range": true,
+          "refId": "N",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_msg_enqueues_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_MSG_ENQUEUES",
+          "range": true,
+          "refId": "O",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "qp_msg_dequeues_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "QP_MSG_DEQUEUES",
+          "range": true,
+          "refId": "P",
+          "useBackend": false
+        }
+      ],
+      "title": "Queue Manager Requests",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${promDataSource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstclos_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTCLOS"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstget_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTGET"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstput_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTPUT"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstput1_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTPUT1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstinq_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTINQ"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 20,
+        "x": 0,
+        "y": 20
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "fbp_dir_io_count_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "FBP_DIR_IO_COUNT",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "fbp_ifetch_req_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "FBP_IFETCH_REQ",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "fbp_pfetch_req_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "FBP_PFETCH_REQ",
+          "range": true,
+          "refId": "C",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "fbp_fblock_req_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "FBP_FBLOCK_REQ",
+          "range": true,
+          "refId": "D",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "fbp_dir_no_entries_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "FBP_DIR_NO_ENTRIES",
+          "range": true,
+          "refId": "E",
+          "useBackend": false
+        }
+      ],
+      "title": "Buffer pool statistics ",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${promDataSource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstclos_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTCLOS"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstget_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTGET"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstput_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTPUT"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstput1_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTPUT1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstinq_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTINQ"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 20,
+        "x": 0,
+        "y": 30
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sch_bmp_active_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "SCH_BMP_ACTIVE",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sch_mpp_active_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "SCH_MPP_ACTIVE",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sch_smb_pgm_confl_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "SCH_SMB_PGM_CONFL",
+          "range": true,
+          "refId": "C",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sch_smb_int_confl_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "SCH_SMB_INT_CONFL",
+          "range": true,
+          "refId": "D",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sch_smb_looked_at_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "SCH_SMB_LOOKED_AT",
+          "range": true,
+          "refId": "E",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sch_smb_other_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "SCH_SMB_OTHER",
+          "range": true,
+          "refId": "F",
+          "useBackend": false
+        }
+      ],
+      "title": "Scheduling statistics",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${promDataSource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 0,
+        "y": 40
+      },
+      "id": 12,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.4.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "logl_curr_seq_no_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Current log sequence number",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${promDataSource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstclos_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTCLOS"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstget_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTGET"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstput_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTPUT"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstput1_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTPUT1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qmstinq_count"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "QMSTINQ"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 14,
+        "x": 6,
+        "y": 40
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "logl_awes_on_write_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "LOGL_AWES_ON_WRITE",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "logl_chkw_requests_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "LOGL_CHKW_REQUESTS",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "logl_wtwt_requests_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "LOGL_WTWT_REQUESTS",
+          "range": true,
+          "refId": "C",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "phyl_olds_reads_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": " PHYL_OLDS_READS",
+          "range": true,
+          "refId": "D",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "phyl_olds_writes_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": " PHYL_OLDS_WRITES",
+          "range": true,
+          "refId": "E",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promDataSource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "phyl_wads_excpvr_ratio{zos_sysplex=~\"$sysplex\", service_namespace=~\"$system\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "PHYL_WADS_EXCPVR ",
+          "range": true,
+          "refId": "F",
+          "useBackend": false
+        }
+      ],
+      "title": "Logger statistics",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 40,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "description": "Selects the Prometheus data source which contains IBM Z metrics",
+        "label": "Prometheus DataSource",
+        "name": "promDataSource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${promDataSource}"
+        },
+        "definition": "label_values(zos_sysplex)",
+        "description": "The IBM Z SYSPLEX(es) to filter on",
+        "label": "SYSPLEX",
+        "multi": true,
+        "name": "sysplex",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(zos_sysplex)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "${SUBSYSTEM_ID}",
+          "value": "${SUBSYSTEM_ID}"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${promDataSource}"
+        },
+        "definition": "label_values({zos_sysplex=~\"$sysplex\"},service_namespace)",
+        "description": "The IBM Z SYSTEM(s) that are available on the SYSPLEX(es) chosen to filter on",
+        "label": "SYSTEM",
+        "multi": true,
+        "name": "system",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values({zos_sysplex=~\"$sysplex\"},service_namespace)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "${DASH_TITLE}",
+  "uid": "${DASH_UID}",
+  "version": 5,
+  "weekStart": ""
+}
