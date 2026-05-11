@@ -17,6 +17,25 @@ Automatically discovers z/OS subsystems from Prometheus and creates organized Gr
 
 ## Overview
 
+### Grafana Folder Hierarchy
+```
+zos-metrics/                   # Root folder
+└── LPAR400J/                  # SYSPLEX
+    └── SYSG/                  # SYSTEM
+        ├── CICS/              # Subsystem type
+        │   ├── CICSR01E       # Dashboard
+        │   ├── CICSR02E       # Dashboard
+        │   └── ...
+        ├── DB2/
+        │   ├── DC1E           # Dashboard
+        │   ├── DC1K           # Dashboard
+        │   └── ...
+        ├── MQ/
+        │   └── M31A           # Dashboard
+        └── IMS/
+            └── IMS1           # Dashboard
+```
+
 This system automates the creation and management of Grafana dashboards for z/OS monitoring. It:
 - Queries Prometheus for z/OS subsystem metrics
 - Automatically detects subsystem types (CICS, DB2, MQ, IMS)
@@ -50,15 +69,36 @@ z/OS Systems → OpenTelemetry → Kafka → OTel Collector → Prometheus
 
 ## Prerequisites
 
-### Required Software
+### 1. Grafana Stack with Static Dashboards (Required First)
+
+**Important**: Before using the auto-dashboard system, you must first deploy the Grafana stack with static dashboards. Follow the instructions in the [main README](../README.md) to:
+
+1. Deploy Grafana, Prometheus, Loki, and Tempo using docker-compose
+2. Configure Prometheus to scrape your z/OS metrics
+3. Verify the static dashboards are working in Grafana
+
+The static dashboards (`../dashboards/`) are automatically provisioned and provide a simple, ready-to-use monitoring experience.
+
+### 2. Optional: Enable Dynamic Dashboards
+
+Once the static dashboards are working, you can **optionally** enable this auto-sync feature for advanced use cases:
+
+- **Static dashboards**: Fixed dashboards for general monitoring (deployed by default)
+- **Dynamic dashboards**: Auto-generated dashboards organized by SYSPLEX/SYSTEM/SUBSYSTEM hierarchy (optional, enabled via auto-sync.sh)
+
+**Key Differences**:
+- Static dashboards use fixed datasource UIDs and display all subsystems
+- Dynamic dashboards use template variables and are customized per subsystem
+- Both can coexist - static dashboards remain in the default location, dynamic dashboards are created in a separate `zos-metrics/` folder hierarchy
+
+### 3. Required Software (for auto-sync)
 - **Bash**: Version 4.0 or higher (with `jobs` command for parallel processing)
 - **curl**: Version 7.0 or higher (for API calls with `-G`, `-s`, `-w` flags)
 - **jq**: Version 1.5 or higher (for JSON processing)
 - **md5sum**: GNU coreutils 8.0+ (or `md5` on macOS) for generating unique IDs
 - **date**: GNU coreutils 8.0+ (for `-d` flag support, or use `gdate` on macOS)
 
-
-### Required Services
+### 4. Running Services (from docker-compose)
 - **Grafana**: Version 11.0 or higher
 - **Prometheus**: Version 2.0 or higher with z/OS metrics
 
@@ -77,11 +117,10 @@ You need a Grafana API key with **Admin** role:
 
 ## Installation
 
-### Step 1: Extract Package
+### Step 1: Clone Repository
 ```bash
-# Extract the package
-tar -xzf grafana-auto-dashboard.tar.gz
-cd grafana-auto-dashboard
+# Clone the repo
+cd grafana-dashboards/dynamic-dashboard
 
 # Verify contents
 ls -la
