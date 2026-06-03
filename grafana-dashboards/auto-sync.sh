@@ -45,6 +45,106 @@ validate_config() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: PROM_URL not set in config.env" >&2
     exit 1
   fi
+
+  if [[ "${GRAFANA_API_KEY}" == "your-grafana-api-key-here" ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: GRAFANA_API_KEY is still set to the placeholder value in config.env" >&2
+    exit 1
+  fi
+
+  if [[ ! "${GRAFANA_URL}" =~ ^https?:// ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: GRAFANA_URL must start with http:// or https://" >&2
+    exit 1
+  fi
+
+  if [[ ! "${PROM_URL}" =~ ^https?:// ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: PROM_URL must start with http:// or https://" >&2
+    exit 1
+  fi
+
+  if [[ -n "${CHECK_INTERVAL:-}" ]] && ! [[ "${CHECK_INTERVAL}" =~ ^[0-9]+$ ]] ; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: CHECK_INTERVAL must be a positive integer" >&2
+    exit 1
+  fi
+
+  if [[ -n "${CHECK_INTERVAL:-}" ]] && [[ "${CHECK_INTERVAL}" -le 0 ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: CHECK_INTERVAL must be greater than 0" >&2
+    exit 1
+  fi
+
+  if [[ -n "${MAX_PARALLEL:-}" ]] && ! [[ "${MAX_PARALLEL}" =~ ^[0-9]+$ ]] ; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: MAX_PARALLEL must be a positive integer" >&2
+    exit 1
+  fi
+
+  if [[ -n "${MAX_PARALLEL:-}" ]] && [[ "${MAX_PARALLEL}" -le 0 ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: MAX_PARALLEL must be greater than 0" >&2
+    exit 1
+  fi
+}
+
+validate_runtime_dependencies() {
+  local missing=0
+
+  for cmd in curl jq; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+      echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: Required command not found: $cmd" >&2
+      missing=1
+    fi
+  done
+
+  if ! command -v md5sum >/dev/null 2>&1 && ! command -v md5 >/dev/null 2>&1; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: Required hash command not found: md5sum or md5" >&2
+    missing=1
+  fi
+
+  if [[ $missing -ne 0 ]]; then
+    exit 1
+  fi
+}
+
+validate_paths() {
+  local dashboard_dir="${DASHBOARD_DIR:-dashboards}"
+
+  if [[ ! "$dashboard_dir" = /* ]]; then
+    dashboard_dir="${SCRIPT_DIR}/${dashboard_dir}"
+  fi
+
+  if [[ ! -d "$dashboard_dir" ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: Dashboard directory not found: $dashboard_dir" >&2
+    exit 1
+  fi
+}
+
+validate_connectivity() {
+  local grafana_health_url="${GRAFANA_URL%/}/api/health"
+  local prometheus_ready_url="${PROM_URL%/}/-/ready"
+  local http_code
+
+  log "Validating Grafana connectivity..."
+  http_code=$(curl -s -o /dev/null -w "%{http_code}" "$grafana_health_url" 2>/dev/null || true)
+  if [[ "$http_code" != "200" ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: Unable to reach Grafana health endpoint: $grafana_health_url (HTTP ${http_code:-000})" >&2
+    exit 1
+  fi
+
+  log "Validating Grafana API key..."
+  http_code=$(curl -s -o /dev/null -w "%{http_code}" \
+    -H "Authorization: Bearer $GRAFANA_API_KEY" \
+    "${GRAFANA_URL%/}/api/user" 2>/dev/null || true)
+  if [[ "$http_code" != "200" ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: Grafana API key validation failed at ${GRAFANA_URL%/}/api/user (HTTP ${http_code:-000})" >&2
+    exit 1
+  fi
+
+  log "Validating Prometheus connectivity..."
+  http_code=$(curl -s -o /dev/null -w "%{http_code}" "$prometheus_ready_url" 2>/dev/null || true)
+  if [[ "$http_code" != "200" ]]; then
+    http_code=$(curl -s -o /dev/null -w "%{http_code}" "${PROM_URL%/}/api/v1/status/config" 2>/dev/null || true)
+    if [[ "$http_code" != "200" ]]; then
+      echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: Unable to reach Prometheus at ${PROM_URL%/} (ready/config check failed, HTTP ${http_code:-000})" >&2
+      exit 1
+    fi
+  fi
 }
 
 #######################################
@@ -614,18 +714,49 @@ delete_static_dashboards() {
 delete_dynamic_dashboards() {
   log "Deleting dynamic dashboards from Grafana..."
   
+  # Test Grafana connectivity first
+  local health_status=$(curl -s -o /dev/null -w "%{http_code}" "$GRAFANA_URL/api/health" 2>/dev/null)
+  if [[ "$health_status" != "200" ]]; then
+    log "  ⚠ WARNING: Cannot connect to Grafana at $GRAFANA_URL (HTTP $health_status)"
+    log "  ⚠ Dynamic dashboards may still exist in Grafana"
+    log "  ⚠ Please verify Grafana URL and manually delete the '$ROOT_FOLDER_NAME' folder if needed"
+    return 1
+  fi
+  
+  # Test API key
+  local auth_status=$(curl -s -o /dev/null -w "%{http_code}" \
+    -H "Authorization: Bearer $API_KEY" \
+    "$GRAFANA_URL/api/user" 2>/dev/null)
+  if [[ "$auth_status" != "200" ]]; then
+    log "  ⚠ WARNING: Grafana API key is invalid or expired (HTTP $auth_status)"
+    log "  ⚠ Cannot delete dynamic dashboards automatically"
+    log "  ⚠ Please update GRAFANA_API_KEY in config.env and manually delete the '$ROOT_FOLDER_NAME' folder"
+    return 1
+  fi
+  
   local root_folder_uid=$(curl -s -H "Authorization: Bearer $API_KEY" \
-    "$GRAFANA_URL/api/folders" | \
-    jq -r ".[] | select(.title == \"$ROOT_FOLDER_NAME\") | .uid" | head -1)
+    "$GRAFANA_URL/api/folders" 2>/dev/null | \
+    jq -r ".[] | select(.title == \"$ROOT_FOLDER_NAME\") | .uid" 2>/dev/null | head -1)
   
   if [[ -n "$root_folder_uid" && "$root_folder_uid" != "null" ]]; then
-    curl -s -X DELETE -H "Authorization: Bearer $API_KEY" \
-      "$GRAFANA_URL/api/folders/$root_folder_uid?forceDeleteRules=true" > /dev/null 2>&1 || true
-    log "  ✓ Deleted dynamic dashboard folder: $ROOT_FOLDER_NAME"
+    local delete_response=$(curl -s -w "\n%{http_code}" -X DELETE \
+      -H "Authorization: Bearer $API_KEY" \
+      "$GRAFANA_URL/api/folders/$root_folder_uid?forceDeleteRules=true" 2>/dev/null)
+    local delete_status=$(echo "$delete_response" | tail -n1)
+    
+    if [[ "$delete_status" == "200" ]]; then
+      log "  ✓ Deleted dynamic dashboard folder: $ROOT_FOLDER_NAME"
+    else
+      log "  ⚠ WARNING: Failed to delete folder '$ROOT_FOLDER_NAME' (HTTP $delete_status)"
+      log "  ⚠ You may need to manually delete it from Grafana UI"
+    fi
+  else
+    log "  ℹ No dynamic dashboard folder found (already deleted or never created)"
   fi
   
   rm -f "$STATE_FILE"
   log "  ✓ Cleaned up state file"
+  return 0
 }
 
 #######################################
@@ -635,7 +766,10 @@ delete_dynamic_dashboards() {
 cmd_start() {
   load_config
   validate_config
+  validate_runtime_dependencies
   apply_config
+  validate_paths
+  validate_connectivity
   
   if [[ -f "$PID_FILE" ]] && kill -0 $(cat "$PID_FILE") 2>/dev/null; then
     log "ERROR: Dynamic mode is already running (PID: $(cat "$PID_FILE"))"
@@ -713,7 +847,9 @@ cmd_status() {
 cmd_run_sync() {
   load_config
   validate_config
+  validate_runtime_dependencies
   apply_config
+  validate_paths
   run_sync_loop
 }
 
