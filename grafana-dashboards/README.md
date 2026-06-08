@@ -137,7 +137,7 @@ If you encounter any issues, it is recommended that you review the docker-compos
 ### Prerequisites
 
 - [Z Observability Connect Telemetry Controller](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=z-observability-connect-overview)
-- [Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/installation/) (tested with 11.4.6)
+- [Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/installation/) (tested with 13.0.1)
 - [Loki](https://grafana.com/docs/loki/latest/setup/install/)
 - [Prometheus](https://prometheus.io/docs/prometheus/latest/installation/)
 
