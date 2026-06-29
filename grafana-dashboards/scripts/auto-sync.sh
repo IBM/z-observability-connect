@@ -745,7 +745,7 @@ delete_dynamic_dashboards() {
     local delete_status=$(echo "$delete_response" | tail -n1)
     
     if [[ "$delete_status" == "200" ]]; then
-      log "  ✓ Deleted dynamic dashboard folder: $ROOT_FOLDER_NAME"
+    log "  ✓ Deleted dynamic dashboard folder: $ROOT_FOLDER_NAME"
     else
       log "  ⚠ WARNING: Failed to delete folder '$ROOT_FOLDER_NAME' (HTTP $delete_status)"
       log "  ⚠ You may need to manually delete it from Grafana UI"
@@ -786,8 +786,8 @@ cmd_start() {
   
   log "✓ Dynamic mode started (PID: $(cat "$PID_FILE"))"
   log "  Log file: ${SCRIPT_DIR}/auto-sync.log"
-  log "  Use './auto-sync.sh status' to check status"
-  log "  Use './auto-sync.sh stop' to switch back to static mode"
+  log "  Use './dynamic-dashboards-status.sh' to check status"
+  log "  Use './remove-dynamic-dashboards.sh' to switch back to static mode"
 }
 
 cmd_stop() {
@@ -876,20 +876,18 @@ main() {
     *)
       echo "Usage: $0 {start|stop|status}"
       echo ""
-      echo "Commands:"
-      echo "  start   - Switch to dynamic dashboard mode"
-      echo "  stop    - Switch back to static dashboard mode"
+      echo "Internal commands:"
+      echo "  start   - Apply dynamic dashboards"
+      echo "  stop    - Remove dynamic dashboards and return to static mode"
       echo "  status  - Show current mode and process status"
       echo ""
-      echo "Examples:"
-      echo "  $0 start    # Enable dynamic dashboards"
-      echo "  $0 stop     # Disable dynamic dashboards"
-      echo "  $0 status   # Check current status"
+      echo "Customer-facing scripts:"
+      echo "  ./apply-dynamic-dashboards.sh"
+      echo "  ./remove-dynamic-dashboards.sh"
+      echo "  ./dynamic-dashboards-status.sh"
       exit 1
       ;;
   esac
 }
 
 main "$@"
-
-# Made with Bob
