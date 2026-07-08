@@ -121,7 +121,7 @@
               "uid": "loki"
             },
             "editorMode": "code",
-            "expr": "{service_name=~\".+\"} | zos_source_name = `SYSLOG` |= ``",
+            "expr": "{service_name=~\".+\"} | zos_source_name =~ `.*SYSLOG.*`",
             "hide": false,
             "legendFormat": "",
             "queryType": "range",
