@@ -128,26 +128,191 @@ To view the sample dashboards for Metrics & Logs, navigate to `Dashboards`.
 
 ![Dashboards](images/dashboards.png)
 
-## Scenario 2: Import ZOC Dashboards into an Existing Grafana Deployment
+#### 8. (Optional) Enable Dynamic Dashboard Mode
 
-Use this scenario if you already have Grafana, Loki, Tempo, and Prometheus running and want to add the ZOC dashboards to your existing environment.
+By default, the Grafana stack deploys with **static dashboards** - pre-configured dashboards that display all subsystems. For advanced users who want automatic dashboard organization by SYSPLEX/SYSTEM/SUBSYSTEM hierarchy, you can optionally enable **dynamic dashboard mode**.
 
-If you encounter any issues, it is recommended that you review the docker-compose.yaml from Scenario 1, install Grafana using the Scenario 1 instructions, and compare your existing Grafana stack to the one created with the included docker-compose.yaml.
+**What is Dynamic Dashboard Mode?**
 
-### Prerequisites
+Dynamic mode automatically:
+- Discovers z/OS subsystems from Prometheus metrics
+- Creates hierarchical folder structure: `zos-metrics → SYSPLEX → SYSTEM → SUBSYSTEM`
+- Generates type-specific dashboards for CICS, DB2, MQ, and IMS
+- Monitors for new subsystems and creates dashboards automatically
+- Organizes dashboards by your z/OS topology
 
-- [Z Observability Connect Telemetry Controller](https://www.ibm.com/docs/en/zapmc/7.1.0?topic=z-observability-connect-overview)
-- [Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/installation/) (tested with 13.0.1)
-- [Loki](https://grafana.com/docs/loki/latest/setup/install/)
-- [Prometheus](https://prometheus.io/docs/prometheus/latest/installation/)
+**Dashboard Mode Comparison:**
 
-### Setup
+| Feature | Static Mode (Default) | Dynamic Mode (Optional) |
+|---------|----------------------|------------------------|
+| Setup | Simple (docker-compose) | Requires API key + config |
+| Organization | Flat list | Hierarchical (SYSPLEX/SYSTEM/SUBSYSTEM) |
+| Subsystem Discovery | Manual | Automatic |
+| Dashboard Updates | Manual | Automatic |
+| Best For | Quick start, simple environments | Large environments, organized topology |
 
-1. Configure datasources ([Prometheus](https://grafana.com/docs/grafana/latest/datasources/prometheus/), [Loki](https://grafana.com/docs/grafana/latest/datasources/loki/))
-2. Import dashboards via [UI](https://grafana.com/docs/grafana-cloud/visualizations/dashboards/build-dashboards/import-dashboards/) or [provisioning](https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards)
+**Prerequisites for Dynamic Mode:**
+- Grafana stack must be running (steps 1-7 above)
+- Grafana API key with Admin role
+- `jq` command-line tool installed (version 1.5+)
+- `bash` version 4.0+ (for associative arrays)
 
-### Notes
+**Enable Dynamic Dashboards:**
 
-- **Datasource UIDs**: Dashboard JSONs contain hardcoded UIDs. Update during import or edit JSON `datasource` fields to match your UIDs.
-- **Data availability**: Requires ZOC Telemetry Controller running and exporting to Prometheus/Loki with correct datasource configuration.
-- **Customization**: Edit dashboards via dashboard settings → Edit.
+1. **Install jq** (if not already installed):
+   ```bash
+   # On RHEL/CentOS
+   sudo yum install -y jq
+   
+   # On Ubuntu/Debian
+   sudo apt-get install -y jq
+   
+   # Verify installation
+   jq --version
+   ```
+
+2. **Generate Grafana API Key**:
+   - Login to Grafana (http://localhost:3000)
+   - Go to **Administration** → **Service Accounts**
+   - Click **Add service account**
+   - Name: `auto-dashboard-script`, Role: **Admin** (Editor role is insufficient)
+   - Click **Add service account token**
+   - Copy the generated token
+
+3. **Configure dynamic dashboard settings**:
+   ```bash
+   # From the grafana directory
+   vi config.env
+   ```
+   
+   Update these settings:
+   ```bash
+   GRAFANA_URL=http://localhost:3000
+   GRAFANA_API_KEY=<your-api-key-here>
+   PROM_URL=http://localhost:9090
+   CHECK_INTERVAL=10  # How often to check for new subsystems (seconds)
+   ```
+
+4. **Apply dynamic dashboards**:
+   ```bash
+   chmod +x apply-dynamic-dashboards.sh remove-dynamic-dashboards.sh dynamic-dashboards-status.sh
+   ./apply-dynamic-dashboards.sh
+
+   example:
+      [root@sk-isl21 dynamic-dashboard]# ./apply-dynamic-dashboards.sh
+      [2026-06-04 06:04:30] Loading configuration from /root/monitoring/dynamic-dashboard/config.env
+      [2026-06-04 06:04:30] Validating Grafana connectivity...
+      [2026-06-04 06:04:30] Validating Grafana API key...
+      [2026-06-04 06:04:31] Validating Prometheus connectivity...
+      [2026-06-04 06:04:31] Starting dynamic dashboard mode...
+      [2026-06-04 06:04:31] Deleting static dashboards from Grafana...
+      [2026-06-04 06:04:31] Updated DYNAMIC_MODE=true in config.env
+      [2026-06-04 06:04:31] ✓ Dynamic mode started (PID: 3077083)
+      [2026-06-04 06:04:31]   Log file: /root/monitoring/dynamic-dashboard/auto-sync.log
+      [2026-06-04 06:04:31]   Use './dynamic-dashboards-status.sh' to check status
+      [2026-06-04 06:04:31]   Use './remove-dynamic-dashboards.sh' to switch back to static mode
+   ```
+   
+   This will:
+   - Remove static dashboards from Grafana
+   - Create dynamic dashboards organized by SYSPLEX → SYSTEM → SUBSYSTEM
+   - Start background process to continuously monitor for new subsystems
+   - Log output to `auto-sync.log`
+
+5. **Check status**:
+   ```bash
+   ./dynamic-dashboards-status.sh
+
+   example:
+      [root@sk-isl21 dynamic-dashboard]# ./dynamic-dashboards-status.sh
+      [2026-06-04 06:01:23] Loading configuration from /root/monitoring/dynamic-dashboard/config.env
+      =========================================
+      Grafana Dashboard Mode Status
+      =========================================
+      Current Mode: false
+
+      Dynamic Sync Process: Not running
+      =========================================
+      [root@sk-isl21 dynamic-dashboard]#
+
+   ```
+
+   
+   Output shows:
+   - Current mode (static or dynamic)
+   - Background process status
+   - Number of deployed dashboards
+
+6. **View logs** (optional):
+   ```bash
+   tail -f auto-sync.log
+   ```
+
+7. **Remove dynamic dashboards and switch back to static mode** (if needed):
+   ```bash
+   ./remove-dynamic-dashboards.sh
+
+   example:
+      [root@sk-isl21 dynamic-dashboard]# ./remove-dynamic-dashboards.sh
+      [2026-06-04 06:11:49] Loading configuration from /root/monitoring/dynamic-dashboard/config.env
+      [2026-06-04 06:11:49] Stopping dynamic dashboard mode...
+      [2026-06-04 06:11:49]   ✓ Stopped background process (PID: 3077083)
+      [2026-06-04 06:11:49] Deleting dynamic dashboards from Grafana...
+      [2026-06-04 06:11:50]   ✓ Deleted dynamic dashboard folder: zos-metrics
+      [2026-06-04 06:11:50]   ✓ Cleaned up state file
+      [2026-06-04 06:11:50] Updated DYNAMIC_MODE=false in config.env
+      [2026-06-04 06:11:50] ✓ Switched back to static dashboard mode
+      [2026-06-04 06:11:50]   Static dashboards will be re-provisioned automatically
+      [2026-06-04 06:11:50]   If they don't appear, restart Grafana: docker-compose restart grafana
+   ```
+   
+   This will:
+   - Stop the background monitoring process
+   - Remove all dynamic dashboards from Grafana
+   - Restore static dashboards (requires Grafana restart: `docker-compose restart grafana`)
+
+**Important Notes:**
+
+- **Mode Switching**: You can switch between static and dynamic modes at any time without losing data
+- **Single Dashboard Source**: Both modes use the same dashboard templates from the `/dashboards` folder
+- **Automatic Conversion**: The script automatically converts static dashboards to dynamic format when needed
+- **Background Process**: Dynamic mode runs continuously in the background to discover new subsystems
+- **State Management**: The script tracks deployed dashboards to avoid duplicates
+
+**Troubleshooting:**
+
+- If dashboards don't appear after switching modes, restart Grafana: `docker-compose restart grafana`
+- Check logs for errors: `tail -100 auto-sync.log`
+- Verify API key has Admin role (Editor role lacks folder creation permissions)
+- Ensure Prometheus has z/OS metrics with required labels: `zos_sysplex`, `service_namespace`, `service_name`, `zos_smf_id`
+
+**Example Dynamic Dashboard Hierarchy:**
+
+```
+zos-metrics/
+└── LPAR400J/              # SYSPLEX
+    └── SYSG/              # SYSTEM
+        ├── CICS/          # Subsystem Type
+        │   ├── CICSR01E   # Individual Dashboard
+        │   └── CICSR02E
+        ├── DB2/
+        │   ├── DC1E
+        │   └── DC1K
+        ├── MQ/
+        │   └── M31A
+        └── IMS/
+            └── IMS1
+```
+
+![Dynamic-dashboard example](./images/dynamic-dashboard.png)
+
+**Example Static Dashboard Hierarchy:**
+```
+├── CICS Metrics dashboard
+├── DB2 Metrics dashboard
+├── IMS Metrics dashboard
+├── MQ Metrics dashboard
+```
+
+
+![static-dashboard](./images/static-dashboard.png)
