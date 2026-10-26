@@ -8,7 +8,7 @@ This repository is versioned in sync with Z Observability Connect product releas
 
 ### Step 1 - Find your product version
 
-When you install Z Observability Connect, you receive a package that you untar to produce an installation folder. Inside that folder, locate the `telemetry-controller` directory. Within it you will find a packaged Helm chart file named:
+When you install Z Observability Connect, you receive a package that you untar to produce an installation folder. Inside that folder, you will find a packaged Helm chart file named:
 
 ```
 telemetry-controller-<version>.tgz
