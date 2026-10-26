@@ -2,6 +2,56 @@
 
 Welcome to the Z Observability Connect public asset page. Each available asset is organized into its own folder. These assets are supplemental to officially supported code and documentation and are intended to provide guidance and examples.
 
+## Using this repository
+
+This repository is versioned in sync with Z Observability Connect product releases. Each product release has a corresponding Git tag in this repository that matches the product version. The assets under a given tag are intended for use with that specific product version. Using assets from a different tag than your installed version may result in incompatibilities.
+
+### Step 1 - Find your product version
+
+When you install Z Observability Connect, you receive a package that you untar to produce an installation folder. Inside that folder, locate the `telemetry-controller` directory. Within it you will find a packaged Helm chart file named:
+
+```
+telemetry-controller-<version>.tgz
+```
+
+The `<version>` portion of that filename is your product version. It follows the format `YY.MM.I`, where `YY` is the two-digit year, `MM` is the two-digit month, and `I` is the iteration number for that month (starting at `0`). For example, `telemetry-controller-26.12.0.tgz` means the first release of December 2026, so your version is `26.12.0`.
+
+### Step 2 - Clone the repository
+
+If you have not already done so, clone this repository to your local machine. Open a terminal and run:
+
+```bash
+git clone https://github.com/IBM/z-observability-connect.git
+```
+
+This downloads a copy of the repository into a folder called `z-observability-connect` in your current directory.
+
+### Step 3 - Navigate into the repository folder
+
+```bash
+cd z-observability-connect
+```
+
+### Step 4 - Switch to the tag for your version
+
+Replace `<version>` below with the version you identified in Step 1 (for example, `26.12.0`):
+
+```bash
+git checkout <version>
+```
+
+After running this command, the files in the folder will reflect the contents published for that specific release. You can now use the assets as described in the sections below.
+
+### Viewing all available versions
+
+To see a list of all available version tags, run:
+
+```bash
+git tag --list
+```
+
+Alternatively, you can browse all releases on the [GitHub releases page](https://github.com/IBM/z-observability-connect/releases) without using the command line.
+
 ## Available Assets:
 
 ### [Proof of Concept Guide](https://github.com/IBM/z-observability-connect/blob/main/proof-of-concept-guide/poc-guide.md)
