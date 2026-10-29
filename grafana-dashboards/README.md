@@ -9,18 +9,17 @@ Sample Grafana dashboards are provided to help visualize and validate telemetry 
   - [Prerequisites](#prerequisites)
   - [Deployment](#deployment)
     - [1. Clone repository](#1-clone-repository)
-    - [2. Configure Prometheus to scrape targets](#2-configure-prometheus-to-scrape-targets)
-    - [3. Deploy the Grafana stack](#3-deploy-the-grafana-stack)
-    - [4. Update Telemetry Controller to Send Traces and Logs](#4-update-telemetry-controller-to-send-traces-and-logs)
-    - [5. Access Grafana](#5-access-grafana)
-    - [6. Set Up Node Graph and Service Graph](#6-set-up-node-graph-and-service-graph)
-    - [7. View Traces](#7-view-traces)
-    - [8. View Sample Dashboards for Metrics and Logs](#8-view-sample-dashboards-for-metrics-and-logs)
-    - [9. (Optional) Enable Dynamic Dashboard Mode](#9-optional-enable-dynamic-dashboard-mode)
+    - [2. Deploy the Grafana stack](#2-deploy-the-grafana-stack)
+    - [3. Update Telemetry Controller to Send Metrics, Traces and Logs](#3-update-telemetry-controller-to-send-metrics-traces-and-logs)
+    - [4. Access Grafana](#4-access-grafana)
+    - [5. Set Up Node Graph and Service Graph](#5-set-up-node-graph-and-service-graph)
+    - [6. View Traces](#6-view-traces)
+    - [7. View Sample Dashboards for Metrics and Logs](#7-view-sample-dashboards-for-metrics-and-logs)
+    - [8. (Optional) Enable Dynamic Dashboard Mode](#8-optional-enable-dynamic-dashboard-mode)
 - [Telemetry Controller Dashboards](#telemetry-controller-dashboards) *(requires Fix Pack 26.8.0+)*
   - [Telemetry Controller Health](#telemetry-controller-health)
   - [ZTC Span Metrics](#ztc-span-metrics)
-  - [Prometheus Per-Pod Scrape Configuration](#prometheus-per-pod-scrape-configuration)
+  - [Per-Pod Identity in the Health Dashboard](#per-pod-identity-in-the-health-dashboard)
 
 ---
 
@@ -59,31 +58,7 @@ Refer to these links for guidance on deploying Docker or Podman with Compose:
 git clone https://github.com/IBM/z-observability-connect.git
 ```
 
-#### 2. Configure Prometheus to scrape targets
-
-The ZOC Telemetry Controller exposes two Prometheus-style metric endpoints. Before deploying the Grafana stack, update `z-observability-connect/grafana-dashboards/config/tools/prometheus.yml` to point Prometheus to the correct endpoints. You must replace:
-
-* `<telemetry-controller-fqdn>:<zos-metrics-port>`
-* `<telemetry-controller-fqdn>:<internal-metrics-port>`
-
-Use the information below to determine the correct ports based on how the Telemetry Controller was deployed.
-
--  z/OS metrics endpoint  
-   - Default ports:  
-     - 30889 when the Telemetry Controller is deployed using Helm  
-     - 31889 when the Telemetry Controller is deployed using the telemetryctl CLI  
-   - Purpose: Provides z/OS-related operational and performance metrics.
-
-- Internal telemetry metrics endpoint  
-   - Default ports:  
-     - 30888 when the Telemetry Controller is deployed using Helm  
-     - 31888 when the Telemetry Controller is deployed using the telemetryctl CLI  
-   - Purpose: Provides internal controller telemetry such as component health and processing statistics.
-
-Note: Telemetry Controller deployments created with Helm use ports beginning with 30xxx. Deployments created with the telemetryctl CLI use ports beginning with 31xxx.
-
-
-#### 3. Deploy the Grafana stack
+#### 2. Deploy the Grafana stack
 
 Before running this step, ensure you are in the `z-observability-connect/grafana-dashboards` directory, as Docker or Podman will need access to `z-observability-connect/grafana-dashboards/docker-compose.yaml`.
 
@@ -97,38 +72,73 @@ Podman:
 podman-compose up -d
 ```
 
-#### 4. Update Telemetry Controller to Send Traces and Logs
+#### 3. Update Telemetry Controller to Send Metrics, Traces and Logs
 
-Now that your Grafana stack is ready, you should configure the ZOC Telemetry Controller to export traces and logs to Grafana. This is done by updating `telemetry-controller/config/exporters.yaml`.
+Now that your Grafana stack is ready, configure the ZOC Telemetry Controller to export metrics, traces and logs to it. This is done by updating `telemetry-controller/config/exporters.yaml` (telemetryctl) or `values.yaml` (Helm).
+
+For metrics, update the `prometheus_remote_write` exporter endpoint to point to your Prometheus instance. Replace `<prometheus-fqdn>` and `<port>` with the FQDN and remote write port of your Prometheus instance (default port `9090`):
+
+```yaml
+prometheus_remote_write:
+  endpoint: "http://<prometheus-fqdn>:<port>/api/v1/write"
+  tls:
+    insecure: true
+  resource_to_telemetry_conversion:
+    enabled: true
+  add_metric_suffixes: true
+```
 
 For logs, uncomment the `otlphttp` section and update the endpoint `http://<loki-backend>:3100/otlp`. The value for `<loki-backend>` should be the fully qualified domain name (FQDN) of the machine where the Grafana stack is deployed.
 
-For traces, add a section to `exporters.yaml` to configure traces to export to Tempo in the Grafana stack. Here is an example:
+For traces, add an `otlp/tempo` exporter block to configure traces to export to Tempo in the Grafana stack. `<tempo-vm-endpoint>` is the FQDN of the machine where you deployed the Grafana stack. Port `4317` is the default gRPC port exposed by Tempo.
 
-```
+- **telemetryctl** — add the following to `telemetry-controller/config/exporters.yaml`:
+
+```yaml
 otlp/tempo:
     pipelines: ["traces"]
     endpoint: "http://<tempo-vm-endpoint>:4317"
     tls:
       insecure: true
 ```
-`tempo-vm-endpoint` is the FQDN of the machine where you deployed the Grafana stack. Port 4317 is the default gRPC port exposed by Tempo.
 
-**IMPORTANT:** After updating `exporters.yaml`, you will need to redeploy the Telemetry Controller:
-* `./telemetryctl stop`
-* `./telemetryctl install`
+- **Helm** — add the equivalent block under `otelcollector.config.exporters` in `values.yaml`:
 
-You must run both stop and install for the configuration to take effect.
+```yaml
+otelcollector:
+  config:
+    exporters:
+      otlp/tempo:
+        endpoint: "http://<tempo-vm-endpoint>:4317"
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        traces:
+          exporters:
+            - otlp/tempo
+```
 
-#### 5. Access Grafana
+**IMPORTANT:** After updating the configuration, you will need to redeploy the Telemetry Controller:
+
+- **telemetryctl:**
+  * `./telemetryctl stop`
+  * `./telemetryctl install`
+
+- **Helm:**
+  * `helm upgrade <release-name> <chart-path> -f values.yaml -n <namespace>`
+
+You must apply the full configuration update for the changes to take effect.
+
+#### 4. Access Grafana
 
 To access the Grafana UI, point your browser to `http://<fqdn>:3000`. The FQDN is the fully qualified hostname of the machine Grafana is deployed on. 
 
-#### 6. Set Up Node Graph and Service Graph
+#### 5. Set Up Node Graph and Service Graph
 
 To enable Node Graph and Service Graph views for trace, navigate to the Grafana UI: `http://<fqdn>:3000`. 
 
-On the lefthand panel, go to `Connecton`->`Data Sources`. 
+On the lefthand panel, go to `Connection`->`Data Sources`. 
 
 ![Data Sources](images/datasources.png)
 
@@ -136,11 +146,11 @@ Click on `Tempo`, then scroll down to `Additional settings`.
 
 ![Additional Settings](images/additionalsettings.png)
 
-Under Service graph, upate the `Data Source` to be `Prometheus` and toggle `Enable node graph` to be enabled. 
+Under Service graph, update the `Data Source` to be `Prometheus` and toggle `Enable node graph` to be enabled.
 
 Scroll to the bottom of the page and select `Save & test`.
 
-#### 7. View Traces
+#### 6. View Traces
 
 Click `Explore` and then select the 'Search' tab. 
 
@@ -154,13 +164,13 @@ Open the `Node graph` section which is located above `Trace`.
 
 ![Node Graph](images/nodegraph.png)
 
-#### 8. View Sample Dashboards for Metrics and Logs
+#### 7. View Sample Dashboards for Metrics and Logs
 
 To view the sample dashboards for Metrics & Logs, navigate to `Dashboards`.
 
 ![Dashboards](images/dashboards.png)
 
-#### 9. (Optional) Enable Dynamic Dashboard Mode
+#### 8. (Optional) Enable Dynamic Dashboard Mode
 
 By default, the Grafana stack deploys with **static dashboards** - pre-configured dashboards that display all subsystems. For advanced users who want automatic dashboard organization by SYSPLEX/SYSTEM/SUBSYSTEM hierarchy, you can optionally enable **dynamic dashboard mode**.
 
@@ -369,12 +379,17 @@ The dashboard is organised into the following sections:
 - **Data Ingestion by Signal Type** — Ingestion rate and distribution across traces, metrics, and logs. Useful for confirming which signal types are actively flowing through the collector.
 - **Receiver Health** — Accepted vs refused spans per receiver, and total spans by receiver. Refused spans greater than zero indicates backpressure or a receiver misconfiguration. Values are shown in spans/sec.
 - **Exporter Health** — Sent vs failed spans and queue size per exporter. A growing queue or failed spans indicates the downstream backend is slow or unreachable.
-- **Processor Performance** — Processors run in series in the order defined in the pipeline. The dashboard includes sample panels for `memory_limiter` and `batch`; if additional processors are configures, queries need to be updated accordingly. `memory_limiter` refused greater than zero means the collector is under memory pressure and actively dropping data. `batch` flush activity is normal and expected.
-- **Resource Utilization** — Memory (RSS and heap) and CPU usage per collector pod. Each pod appears as a separate labelled line, enabling per-pod comparison.
+- **Processor Performance** — Processors run in series in the order defined in the pipeline. The dashboard includes sample panels for `memory_limiter` and `batch`; if additional processors are configured, queries need to be updated accordingly. `memory_limiter` refused greater than zero means the collector is under memory pressure and actively dropping data. `batch` flush activity is normal and expected.
+- **Resource Utilization** — Memory (RSS and heap) and CPU usage per collector pod. By default each pod is identified by its `service_instance_id` (a UUID). To show human-readable pod names (e.g. `otel-collector-0`, `otel-collector-1`) in the legend, add a `pod` label to the `prometheus/health` receiver scrape config. See [Per-Pod Identity in the Health Dashboard](#per-pod-identity-in-the-health-dashboard) below.
+
+**How health metrics reach Prometheus:**
+
+The collector exposes its own internal metrics on port `8888` in Prometheus exposition format. The `prometheus/health` receiver in the pipeline scrapes this port on loopback (`127.0.0.1:8888`) — a self-scrape that never leaves the pod. The collected metrics are then forwarded to Prometheus via the `prometheus_remote_write` exporter. Port `8888` is exposed only as a `ClusterIP` service within the cluster and is not accessible externally.
 
 **Prerequisites:**
 
-- Prometheus must be configured to scrape each collector pod directly by pod IP (not via the NodePort service). See [Prometheus per-pod scrape configuration](#prometheus-per-pod-scrape-configuration) below.
+- The `prometheus/health` receiver and `prometheus_remote_write` exporter must both be enabled in the Telemetry Controller pipeline configuration. This is the default in Fix Pack 26.8.0 and later.
+- To display pod names instead of UUIDs in the Resource Utilization panels, add a `pod` label to the `prometheus/health` receiver `static_configs`. See [Per-Pod Identity in the Health Dashboard](#per-pod-identity-in-the-health-dashboard) below.
 - Grafana connected to Prometheus as a data source.
 
 ---
@@ -397,8 +412,7 @@ The dashboard is organised into the following sections:
 
 **Prerequisites:**
 
-- Prometheus must be scraping the Telemetry Controller z/OS metrics endpoint (port `31889` for telemetryctl deployments, `30889` for Helm deployments).
-- The `spanmetrics` connector must be enabled in the Telemetry Controller pipeline configuration.
+- The `spanmetrics` connector must be enabled in the Telemetry Controller pipeline configuration and its output pipeline must use the `prometheus_remote_write` exporter to push span-derived metrics to Prometheus.
 - The following span dimensions must be configured in the `spanmetrics` connector:
   - `tps.system` (CICS)
   - `db.system.name` (DB2)
@@ -410,33 +424,28 @@ The dashboard is organised into the following sections:
 
 ---
 
-### Prometheus Per-Pod Scrape Configuration
+### Per-Pod Identity in the Health Dashboard
 
-The **Telemetry Controller Health** dashboard requires Prometheus to scrape each collector pod directly by pod IP rather than through the Kubernetes NodePort service. Scraping via NodePort load-balances between pods, causing each scrape to randomly hit one pod and overwrite the previous pod's metrics under the same `instance` label — resulting in incomplete per-pod data.
+By default the **Resource Utilization** panels (Memory RSS, Heap Allocated, CPU Usage) identify each collector pod by its `service_instance_id`, which is a UUID generated at startup. This can be hard to map to the pod name.
 
-Update your `prometheus.yml` scrape configuration as follows:
+To display human-readable pod names (e.g. `otel-collector-0`, `otel-collector-1`) in the legend, add a `pod` label directly to the `prometheus/health` receiver's `static_configs` in your `values.yaml`. The Telemetry Controller StatefulSet already injects the pod name as the `POD_NAME` environment variable, so the value is available at runtime.
+
+**How to configure:**
+
+In your `values.yaml` (Helm) or equivalent OTel Collector config, update the `prometheus/health` receiver to include the `pod` label under `static_configs`:
 
 ```yaml
-scrape_configs:
-  - job_name: "otel-collector"
-    scrape_interval: 10s
-    static_configs:
-
-      # Internal self-telemetry — scrape each pod directly
-      - targets: ["<pod-0-ip>:8888"]
-        labels:
-          pod: "otel-collector-0"
-      - targets: ["<pod-1-ip>:8888"]
-        labels:
-          pod: "otel-collector-1"
+prometheus/health:
+  config:
+    scrape_configs:
+      - job_name: otelcol
+        scrape_interval: 10s
+        static_configs:
+          - targets: ["127.0.0.1:8888"]
+            labels:
+              pod: ${env:POD_NAME}
 ```
 
-To find pod IPs:
-```bash
-kubectl get pods -n <namespace> -o wide | grep otel-collector
-```
+The `${env:POD_NAME}` syntax resolves the `POD_NAME` environment variable at collector startup. With `resource_to_telemetry_conversion: enabled: true` already set on the `prometheus_remote_write` exporter (the default), the `pod` label is written to Prometheus on every scraped metric and appears in the dashboard legend as the pod name.
 
-> **Note:** Pod IPs change on pod restart. For a production setup, use Prometheus Kubernetes service discovery (`kubernetes_sd_configs`) with a `PodMonitor` to track pod IPs automatically.
-
-The `pod` label is what drives the per-pod legend in the **Memory Usage** and **CPU Usage** panels, showing each pod by name (e.g. `otel-collector-0`, `otel-collector-1`).
-
+> **Note:** Pod names follow the StatefulSet naming convention: `otel-collector-0`, `otel-collector-1`, etc. (or `otel-col-tier1-0`, `otel-col-tier1-1` when the two-tier topology is enabled). Without this label, all panels continue to work correctly — only the legend shows UUIDs with no pod name.
