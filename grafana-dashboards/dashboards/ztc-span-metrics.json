@@ -1,0 +1,2245 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS_REMOTE_WRITE",
+      "label": "prometheus_remote_write",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "13.0.1+security-01"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Monitor Z telemetry data using Z Telemetry Controller. Focuses on CICS, DB2, MQ, and IMS subsystems.",
+  "editable": true,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 59,
+      "title": "Overview",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Active SYSPLEX count (across both zos_sysplex and zos_sysplex_name)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 0,
+        "y": 1
+      },
+      "id": 3,
+      "interval": "$minstep",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "count(count by (zos_sysplex, zos_sysplex_name) (traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\"}))",
+          "instant": true,
+          "legendFormat": "__auto",
+          "refId": "A"
+        }
+      ],
+      "title": "Active SYSPLEX",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Active LPAR count",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 5,
+        "y": 1
+      },
+      "id": 4,
+      "interval": "$minstep",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "count(count by (mainframe_lpar_name) (traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}))",
+          "instant": true,
+          "legendFormat": "All Subsystems",
+          "refId": "A"
+        }
+      ],
+      "title": "Active LPAR",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Active services",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 10,
+        "y": 1
+      },
+      "id": 5,
+      "interval": "$minstep",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "count(count by (service_name) (traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}))",
+          "instant": true,
+          "legendFormat": "All Subsystems",
+          "refId": "A"
+        }
+      ],
+      "title": "Active Services",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 60,
+      "title": "Volume Analysis",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Current span rate across all selections",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "max": 10000,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "spans/s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 0,
+        "y": 7
+      },
+      "id": 19,
+      "interval": "$minstep",
+      "options": {
+        "barShape": "flat",
+        "barWidthFactor": 0.5,
+        "effects": {
+          "barGlow": false,
+          "centerGlow": false,
+          "gradient": false
+        },
+        "endpointMarker": "point",
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "segmentCount": 1,
+        "segmentSpacing": 0.3,
+        "shape": "gauge",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false,
+        "sizing": "auto",
+        "sparkline": false,
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[max($__rate_interval,2m)]))",
+          "legendFormat": "All",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Current Span Rate ",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 18,
+        "x": 6,
+        "y": 7
+      },
+      "id": 39,
+      "interval": "$minstep",
+      "options": {
+        "annotations": {
+          "clustering": -1,
+          "multiLane": false
+        },
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[max($__rate_interval,2m)]))",
+          "legendFormat": "Total Span Rate",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(vc_traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[max($__rate_interval,2m)]))",
+          "legendFormat": "Span Rate after Volume Control (VC)",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Total Span Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "spans/s"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "1 Week Trend.*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "Current Trend.*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 17
+      },
+      "id": 58,
+      "interval": "$minstep",
+      "options": {
+        "annotations": {
+          "clustering": -1,
+          "multiLane": false
+        },
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Name",
+          "sortDesc": false,
+          "width": 320
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum by (mainframe_lpar_name) (rate(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval]))",
+          "legendFormat": "{{mainframe_lpar_name}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "avg_over_time(sum by (mainframe_lpar_name)(rate(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval]))[1m:])",
+          "legendFormat": "Current Trend {{mainframe_lpar_name}}",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "avg_over_time(sum by (mainframe_lpar_name) (rate(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval]))[1w:])",
+          "legendFormat": "1 Week Trend {{mainframe_lpar_name}}",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum by (mainframe_lpar_name) (rate(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval] offset 2d))",
+          "legendFormat": "Last Week {{mainframe_lpar_name}}",
+          "range": true,
+          "refId": "E"
+        }
+      ],
+      "title": "Span Rate by LPAR",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "spans/s"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "1 Week Trend.*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "Current Trend.*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 17
+      },
+      "id": 43,
+      "interval": "$minstep",
+      "options": {
+        "annotations": {
+          "clustering": -1,
+          "multiLane": false
+        },
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Name",
+          "sortDesc": false,
+          "width": 320
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum by (zos_sysplex, zos_sysplex_name) (rate(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval]))",
+          "legendFormat": "{{zos_sysplex}}{{zos_sysplex_name}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "avg_over_time(sum by (zos_sysplex, zos_sysplex_name)(rate(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval]))[1m:])",
+          "legendFormat": "Current Trend {{zos_sysplex}}{{zos_sysplex_name}}",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "avg_over_time(sum by (zos_sysplex, zos_sysplex_name) (rate(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval]))[1w:])",
+          "legendFormat": "1 Week Trend {{zos_sysplex}}{{zos_sysplex_name}}",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum by (zos_sysplex, zos_sysplex_name) (rate(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval] offset 2d))",
+          "legendFormat": "Last Week {{zos_sysplex}}{{zos_sysplex_name}}",
+          "range": true,
+          "refId": "E"
+        }
+      ],
+      "title": "Span Rate by Sysplex",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 2,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "spans/s"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "Last Week.*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*CICS.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*DB2.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*MQ.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*IMS.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "id": 7,
+      "interval": "$minstep",
+      "options": {
+        "annotations": {
+          "clustering": -1,
+          "multiLane": false
+        },
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Name",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{tps_system=\"cics\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\", span_name=~\".*(${subsystem:pipe}).*\"}[$__rate_interval]))",
+          "legendFormat": "CICS",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{db_system_name=\"ibm.db2\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\", span_name=~\".*(${subsystem:pipe}).*\"}[$__rate_interval]))",
+          "legendFormat": "DB2",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{messaging_system=\"ibmmq\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\", span_name=~\".*(${subsystem:pipe}).*\"}[$__rate_interval]))",
+          "legendFormat": "MQ",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{ibm_ims_transaction!=\"\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\", span_name=~\".*(${subsystem:pipe}).*\"}[$__rate_interval]))",
+          "legendFormat": "IMS",
+          "range": true,
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{tps_system=\"cics\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\", span_name=~\".*(${subsystem:pipe}).*\"}[$__rate_interval] offset 1w))",
+          "legendFormat": "Last Week CICS",
+          "range": true,
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{db_system_name=\"ibm.db2\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\", span_name=~\".*(${subsystem:pipe}).*\"}[$__rate_interval] offset 1w))",
+          "legendFormat": "Last Week DB2",
+          "range": true,
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{messaging_system=\"ibmmq\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\", span_name=~\".*(${subsystem:pipe}).*\"}[$__rate_interval] offset 1w))",
+          "legendFormat": "Last Week MQ",
+          "range": true,
+          "refId": "G"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{ibm_ims_transaction!=\"\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval] offset 1w))",
+          "legendFormat": "Last Week IMS",
+          "range": true,
+          "refId": "H"
+        }
+      ],
+      "title": "Span Rate by Subsystem",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "spans/s"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*Last Week.*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
+      "id": 41,
+      "interval": "$minstep",
+      "options": {
+        "annotations": {
+          "clustering": -1,
+          "multiLane": false
+        },
+        "legend": {
+          "calcs": [
+            "max",
+            "last",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum by (service_name) (\n  rate(traces_span_metrics_calls_total{\n    zos_sysplex=~\"$sysplex|^$\",\n    zos_sysplex_name=~\"$sysplex|^$\",\n    mainframe_lpar_name=~\"$lpar\",\n    service_name=~\"$service\", span_name=~\".*(${subsystem:pipe}).*\"\n  }[$__rate_interval])\n)",
+          "legendFormat": "{{service_name}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum by (service_name) (\n  rate(traces_span_metrics_calls_total{\n    zos_sysplex=~\"$sysplex|^$\",\n    zos_sysplex_name=~\"$sysplex|^$\",\n    mainframe_lpar_name=~\"$lpar\",\n    service_name=~\"$service\", span_name=~\".*(${subsystem:pipe}).*\"\n  }[$__rate_interval] offset 1w)\n)",
+          "legendFormat": "Last Week {{service_name}}",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Span Rate by Services",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 42
+      },
+      "id": 61,
+      "title": "Span Distribution",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Distribution across SYSPLEX (both zos_sysplex and zos_sysplex_name)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "unit": "spans/s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 0,
+        "y": 43
+      },
+      "id": 27,
+      "interval": "$minstep",
+      "options": {
+        "displayLabels": [
+          "name",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum by (zos_sysplex, zos_sysplex_name) (increase(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__range]))",
+          "instant": true,
+          "legendFormat": "{{zos_sysplex}}{{zos_sysplex_name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Span Distribution by SYSPLEX",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Distribution across LPARs",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "unit": "spans/s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 6,
+        "y": 43
+      },
+      "id": 28,
+      "interval": "$minstep",
+      "options": {
+        "displayLabels": [
+          "name",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum by (mainframe_lpar_name)(increase(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__range]))",
+          "instant": true,
+          "legendFormat": "__auto",
+          "refId": "A"
+        }
+      ],
+      "title": "Span Distribution by LPAR",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Distribution across subsystems",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "decimals": 2,
+          "unit": "spans/s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 12,
+        "y": 43
+      },
+      "id": 8,
+      "interval": "$minstep",
+      "options": {
+        "displayLabels": [
+          "name",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(increase(traces_span_metrics_calls_total{tps_system=\"cics\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\"}[$__range]))",
+          "instant": true,
+          "legendFormat": "CICS",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(increase(traces_span_metrics_calls_total{db_system_name=\"ibm.db2\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\"}[$__range]))",
+          "instant": true,
+          "legendFormat": "DB2",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(increase(traces_span_metrics_calls_total{messaging_system=\"ibmmq\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\"}[$__range]))",
+          "instant": true,
+          "legendFormat": "MQ",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(increase(traces_span_metrics_calls_total{ibm_ims_transaction!=\"\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\"}[$__range]))",
+          "instant": true,
+          "legendFormat": "IMS",
+          "refId": "D"
+        }
+      ],
+      "title": "Span distribution across Subsystem",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Distribution across Services",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "unit": "spans/s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 18,
+        "y": 43
+      },
+      "id": 35,
+      "interval": "$minstep",
+      "options": {
+        "displayLabels": [
+          "name",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum by (service_name)(increase(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__range]))",
+          "instant": true,
+          "legendFormat": "__auto",
+          "refId": "A"
+        }
+      ],
+      "title": "Span distribution across Services",
+      "type": "piechart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 52
+      },
+      "id": 62,
+      "title": "Current Subsystem Rate",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "CICS subsystem span rate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "max": 10000,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "spans/s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 53
+      },
+      "id": 20,
+      "interval": "$minstep",
+      "options": {
+        "barShape": "flat",
+        "barWidthFactor": 0.5,
+        "effects": {
+          "barGlow": false,
+          "centerGlow": false,
+          "gradient": false
+        },
+        "endpointMarker": "point",
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "segmentCount": 1,
+        "segmentSpacing": 0.3,
+        "shape": "gauge",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto",
+        "sparkline": false,
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{tps_system=\"cics\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval]))",
+          "legendFormat": "CICS",
+          "refId": "A"
+        }
+      ],
+      "title": "CICS Span Rate (Gauge)",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "DB2 subsystem span rate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "max": 10000,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "spans/s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 53
+      },
+      "id": 26,
+      "interval": "$minstep",
+      "options": {
+        "barShape": "flat",
+        "barWidthFactor": 0.5,
+        "effects": {
+          "barGlow": false,
+          "centerGlow": false,
+          "gradient": false
+        },
+        "endpointMarker": "point",
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "segmentCount": 1,
+        "segmentSpacing": 0.3,
+        "shape": "gauge",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto",
+        "sparkline": false,
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{db_system_name=\"ibm.db2\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval]))",
+          "legendFormat": "DB2",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "DB2 Span Rate (Gauge)",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "MQ subsystem span rate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "max": 10000,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "spans/s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 53
+      },
+      "id": 22,
+      "interval": "$minstep",
+      "options": {
+        "barShape": "flat",
+        "barWidthFactor": 0.5,
+        "effects": {
+          "barGlow": false,
+          "centerGlow": false,
+          "gradient": false
+        },
+        "endpointMarker": "point",
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "segmentCount": 1,
+        "segmentSpacing": 0.3,
+        "shape": "gauge",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto",
+        "sparkline": false,
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{messaging_system=\"ibmmq\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval]))",
+          "legendFormat": "MQ",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "MQ Span Rate (Gauge)",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "IMS subsystem span rate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "max": 10000,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "spans/s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 53
+      },
+      "id": 21,
+      "interval": "$minstep",
+      "options": {
+        "barShape": "flat",
+        "barWidthFactor": 0.5,
+        "effects": {
+          "barGlow": false,
+          "centerGlow": false,
+          "gradient": false
+        },
+        "endpointMarker": "point",
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "segmentCount": 1,
+        "segmentSpacing": 0.3,
+        "shape": "gauge",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto",
+        "sparkline": false,
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(rate(traces_span_metrics_calls_total{ibm_ims_transaction!=\"\", zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[$__rate_interval]))",
+          "legendFormat": "IMS",
+          "refId": "A"
+        }
+      ],
+      "title": "IMS Span Rate (Gauge)",
+      "type": "gauge"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 61
+      },
+      "id": 63,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "Percentage of spans with error status",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 5
+                  },
+                  {
+                    "color": "red",
+                    "value": 10
+                  }
+                ]
+              },
+              "unit": "percent"
+            }
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 6,
+            "x": 0,
+            "y": 62
+          },
+          "id": 33,
+          "options": {
+            "displayMode": "basic",
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "maxVizHeight": 300,
+            "minVizHeight": 16,
+            "minVizWidth": 8,
+            "namePlacement": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": true,
+            "sizing": "auto",
+            "valueMode": "color"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "100 * sum by (service_name) (\n  rate(traces_span_metrics_calls_total{\n    error_type!=\"\",\n    zos_sysplex=~\"$sysplex|^$\",\n    zos_sysplex_name=~\"$sysplex|^$\",\n    mainframe_lpar_name=~\"$lpar\",\n    service_name=~\"$service\"\n  }[$__rate_interval])\n)\n/\nsum by (service_name) (\n  rate(traces_span_metrics_calls_total{\n    zos_sysplex=~\"$sysplex|^$\",\n    zos_sysplex_name=~\"$sysplex|^$\",\n    mainframe_lpar_name=~\"$lpar\",\n    service_name=~\"$service\"\n  }[$__rate_interval])\n)",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Error Rate % (Gauge)",
+          "type": "bargauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "Error rate trend over time across all subsystems",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              },
+              "unit": "percent"
+            }
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 18,
+            "x": 6,
+            "y": 62
+          },
+          "id": 31,
+          "options": {
+            "annotations": {
+              "clustering": -1,
+              "multiLane": false
+            },
+            "legend": {
+              "calcs": [
+                "mean",
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "100 * sum by (service_name)(rate(traces_span_metrics_calls_total{\n  error_type!=\"\",\n  zos_sysplex=~\"$sysplex|^$\",\n  zos_sysplex_name=~\"$sysplex|^$\",\n  mainframe_lpar_name=~\"$lpar\",\n  service_name=~\"$service\"\n}[$__rate_interval]))\n/\nsum by (service_name)(rate(traces_span_metrics_calls_total{\n  zos_sysplex=~\"$sysplex|^$\",\n  zos_sysplex_name=~\"$sysplex|^$\",\n  mainframe_lpar_name=~\"$lpar\",\n  service_name=~\"$service\"\n}[$__rate_interval]))\n",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Error Rate Over Time",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Error Metrics",
+      "type": "row"
+    }
+  ],
+  "refresh": "auto",
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allowCustomValue": true,
+        "current": {},
+        "includeAll": false,
+        "label": "Data Source",
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "auto": true,
+        "auto_count": 30,
+        "auto_min": "30s",
+        "current": {
+          "text": "2m",
+          "value": "2m"
+        },
+        "label": "Min step",
+        "name": "minstep",
+        "options": [
+          {
+            "selected": false,
+            "text": "30s",
+            "value": "30s"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": true,
+            "text": "2m",
+            "value": "2m"
+          },
+          {
+            "selected": false,
+            "text": "5m",
+            "value": "5m"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          }
+        ],
+        "query": "30s,1m,2m,5m,10m,30m,1h",
+        "refresh": 2,
+        "type": "interval"
+      },
+      {
+        "allowCustomValue": true,
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "query_result(label_replace(count by (zos_sysplex)(traces_span_metrics_calls_total{zos_sysplex!=\"\"}), \"_v\", \"$1\", \"zos_sysplex\", \"(.+)\") or label_replace(count by (zos_sysplex_name)(traces_span_metrics_calls_total{zos_sysplex_name!=\"\"}), \"_v\", \"$1\", \"zos_sysplex_name\", \"(.+)\"))",
+        "description": "Filter by SYSPLEX name.",
+        "includeAll": true,
+        "label": "SYSPLEX",
+        "name": "sysplex",
+        "options": [],
+        "query": {
+          "query": "query_result(label_replace(count by (zos_sysplex)(traces_span_metrics_calls_total{zos_sysplex!=\"\"}), \"_v\", \"$1\", \"zos_sysplex\", \"(.+)\") or label_replace(count by (zos_sysplex_name)(traces_span_metrics_calls_total{zos_sysplex_name!=\"\"}), \"_v\", \"$1\", \"zos_sysplex_name\", \"(.+)\"))",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "regex": "/.*_v=\"([^\"]+)\".*/",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allowCustomValue": true,
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\"}, mainframe_lpar_name)",
+        "includeAll": true,
+        "label": "LPAR",
+        "multi": true,
+        "name": "lpar",
+        "options": [],
+        "query": {
+          "query": "label_values(traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\"}, mainframe_lpar_name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": "(?i)CICS.*|(?i)db2.*|(?i)IMS.*|(?i)MQ.*",
+        "allowCustomValue": true,
+        "current": {
+          "text": [
+            "$__all"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "includeAll": true,
+        "label": "Subsystem Type",
+        "multi": true,
+        "name": "subsystem",
+        "options": [
+          {
+            "selected": false,
+            "text": "CICS",
+            "value": "(?i)CICS.*"
+          },
+          {
+            "selected": false,
+            "text": "DB2",
+            "value": "(?i)db2.*"
+          },
+          {
+            "selected": false,
+            "text": "IMS",
+            "value": "(?i)IMS.*"
+          },
+          {
+            "selected": false,
+            "text": "MQ",
+            "value": "(?i)MQ.*"
+          }
+        ],
+        "query": "CICS : (?i)CICS.*, DB2 : (?i)db2.*, IMS : (?i)IMS.*, MQ : (?i)MQ.*",
+        "type": "custom",
+        "valuesFormat": "csv"
+      },
+      {
+        "allValue": ".*",
+        "allowCustomValue": true,
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(traces_span_metrics_calls_total{\"$zos_sysplex\"=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", span_name=~\".*(${subsystem:pipe}).*\"},service_name)",
+        "includeAll": true,
+        "label": "Service",
+        "multi": true,
+        "name": "service",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(traces_span_metrics_calls_total{\"$zos_sysplex\"=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", span_name=~\".*(${subsystem:pipe}).*\"},service_name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "ZTC Span Metrics",
+  "uid": "g5g8t5",
+  "version": 0
+}
