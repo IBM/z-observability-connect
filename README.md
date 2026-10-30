@@ -37,10 +37,15 @@ cd z-observability-connect
 Replace `<version>` below with the version you identified in Step 1 (for example, `26.12.0`):
 
 ```bash
-git checkout <version>
+git checkout v<version>
 ```
 
 After running this command, the files in the folder will reflect the contents published for that specific release. You can now use the assets as described in the sections below.
+
+For example, if you are on Telemetry Controller release version `26.12.0` you would run the following command:
+```bash
+git checkout v26.12.0
+```
 
 ### Viewing all available versions
 
