@@ -16,7 +16,7 @@ Sample Grafana dashboards are provided to help visualize and validate telemetry 
     - [6. View Traces](#6-view-traces)
     - [7. View Sample Dashboards for Metrics and Logs](#7-view-sample-dashboards-for-metrics-and-logs)
     - [8. (Optional) Enable Dynamic Dashboard Mode](#8-optional-enable-dynamic-dashboard-mode)
-- [Telemetry Controller Dashboards](#telemetry-controller-dashboards) *(requires Fix Pack 26.8.0+)*
+- [Telemetry Controller Dashboards](#telemetry-controller-dashboards)
   - [Telemetry Controller Health](#telemetry-controller-health)
   - [ZTC Span Metrics](#ztc-span-metrics)
   - [Per-Pod Identity in the Health Dashboard](#per-pod-identity-in-the-health-dashboard)
@@ -26,10 +26,8 @@ Sample Grafana dashboards are provided to help visualize and validate telemetry 
 ## Dashboard Overview
 
 - **CICS / DB2 / MQ / IMS Metrics dashboards** — z/OS subsystem operational metrics
-- **ZTC Health Metrics — OTel Collector Operations** — internal health and performance of the Telemetry Controller collector pods *(requires Fix Pack 26.8.0+)*
-- **ZTC Span Metrics** — z/OS workload span rates and error metrics derived from distributed traces *(requires Fix Pack 26.8.0+)*
-
-> **Note:** The **ZTC Health Metrics** and **ZTC Span Metrics** dashboards require **ZOC Telemetry Controller Fix Pack 26.8.0 or later**. They will not populate with data on earlier Fix Pack versions.
+- **ZTC Health Metrics — OTel Collector Operations** — internal health and performance of the Telemetry Controller collector pods
+- **ZTC Span Metrics** — z/OS workload span rates and error metrics derived from distributed traces
 
 To view these dashboards, several prerequisites must be in place, including Grafana, Prometheus, Tempo, and Loki. The instructions below outline two possible scenarios, depending on whether you already have these prerequisites in place.
 
@@ -76,11 +74,11 @@ podman-compose up -d
 
 Now that your Grafana stack is ready, configure the ZOC Telemetry Controller to export metrics, traces and logs to it. This is done by updating `telemetry-controller/config/exporters.yaml` (telemetryctl) or `values.yaml` (Helm).
 
-For metrics, update the `prometheus_remote_write` exporter endpoint to point to your Prometheus instance. Replace `<prometheus-fqdn>` and `<port>` with the FQDN and remote write port of your Prometheus instance (default port `9090`):
+For metrics, update the `prometheus_remote_write` exporter endpoint to point to your Prometheus instance. `<prometheus-fqdn>` is the FQDN of the machine where you deployed the Grafana stack. Port `9090` is the default remote write port exposed by Prometheus:
 
 ```yaml
 prometheus_remote_write:
-  endpoint: "http://<prometheus-fqdn>:<port>/api/v1/write"
+  endpoint: "http://<prometheus-fqdn>:9090/api/v1/write"
   tls:
     insecure: true
   resource_to_telemetry_conversion:
@@ -363,8 +361,6 @@ zos-metrics/
 
 ## Telemetry Controller Dashboards
 
-> The dashboards in this section (**ZTC Health Metrics** and **ZTC Span Metrics**) require **ZOC Telemetry Controller Fix Pack 26.8.0 or later**. They will not populate with data with earlier Fix Pack versions.
-
 In addition to the subsystem metric dashboards (CICS, DB2, MQ, IMS), two dashboards are provided to monitor the Telemetry Controller itself and the z/OS workload it is processing.
 
 ### Telemetry Controller Health
@@ -375,7 +371,7 @@ Monitors the internal health and performance of the OTel Collector instances run
 
 The dashboard is organised into the following sections:
 
-- **Telemetry Controller Health Overview** — At-a-glance stat panels for Active Collectors, Span Acceptance Rate, and Export Success Rate. Active Collectors should match your expected pod count; acceptance and export rates should remain at 100%.
+- **Telemetry Controller Health Overview** — At-a-glance stat panels for Active Collectors, Span Acceptance Rate, and Export Success Rate. Active Collectors should match your expected pod count; acceptance and export rates should remain at 100%. Drops in pod count or in either rate may indicate an issue that requires investigation.
 - **Data Ingestion by Signal Type** — Ingestion rate and distribution across traces, metrics, and logs. Useful for confirming which signal types are actively flowing through the collector.
 - **Receiver Health** — Accepted vs refused spans per receiver, and total spans by receiver. Refused spans greater than zero indicates backpressure or a receiver misconfiguration. Values are shown in spans/sec.
 - **Exporter Health** — Sent vs failed spans and queue size per exporter. A growing queue or failed spans indicates the downstream backend is slow or unreachable.
@@ -388,7 +384,7 @@ The collector exposes its own internal metrics on port `8888` in Prometheus expo
 
 **Prerequisites:**
 
-- The `prometheus/health` receiver and `prometheus_remote_write` exporter must both be enabled in the Telemetry Controller pipeline configuration. This is the default in Fix Pack 26.8.0 and later.
+- The `prometheus/health` receiver and `prometheus_remote_write` exporter must both be enabled in the Telemetry Controller pipeline configuration. These are enabled by default if using our out of the box Telemetry Controller configuration.
 - To display pod names instead of UUIDs in the Resource Utilization panels, add a `pod` label to the `prometheus/health` receiver `static_configs`. See [Per-Pod Identity in the Health Dashboard](#per-pod-identity-in-the-health-dashboard) below.
 - Grafana connected to Prometheus as a data source.
 
