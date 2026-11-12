@@ -19,6 +19,8 @@ Sample Grafana dashboards are provided to help visualize and validate telemetry 
 - [Telemetry Controller Dashboards](#telemetry-controller-dashboards)
   - [Telemetry Controller Health](#telemetry-controller-health)
   - [ZTC Span Metrics](#ztc-span-metrics)
+  - [ZTC Span Metrics with Tracestate Sampling Enabled](#ztc-span-metrics-with-tracestate-sampling-enabled)
+  - [ZTC Span Metrics with Volume Control Enabled](#ztc-span-metrics-with-volume-control-enabled)
   - [Per-Pod Identity in the Health Dashboard](#per-pod-identity-in-the-health-dashboard)
 
 ---
@@ -28,6 +30,8 @@ Sample Grafana dashboards are provided to help visualize and validate telemetry 
 - **CICS / DB2 / MQ / IMS Metrics dashboards** — z/OS subsystem operational metrics
 - **ZTC Health Metrics — OTel Collector Operations** — internal health and performance of the Telemetry Controller collector pods
 - **ZTC Span Metrics** — z/OS workload span rates and error metrics derived from distributed traces
+- **ZTC Span Metrics with Tracestate Sampling Enabled** — span rate and volume reduction metrics with Tracestate Sampling feature enabled
+- **ZTC Span Metrics with Volume Control Enabled** — span rate and volume reduction metrics with Volume Control feature enabled
 
 To view these dashboards, several prerequisites must be in place, including Grafana, Prometheus, Tempo, and Loki. The instructions below outline two possible scenarios, depending on whether you already have these prerequisites in place.
 
@@ -361,7 +365,7 @@ zos-metrics/
 
 ## Telemetry Controller Dashboards
 
-In addition to the subsystem metric dashboards (CICS, DB2, MQ, IMS), two dashboards are provided to monitor the Telemetry Controller itself and the z/OS workload it is processing.
+In addition to the subsystem metric dashboards (CICS, DB2, MQ, IMS), the following dashboards are provided to monitor the Telemetry Controller itself and the z/OS workload it is processing:
 
 ### Telemetry Controller Health
 
@@ -417,6 +421,37 @@ The dashboard is organised into the following sections:
   - `mainframe.lpar.name`
   - `zos.sysplex.name`
 - Active z/OS workload sending traces through the Telemetry Controller.
+
+---
+
+### ZTC Span Metrics with Tracestate Sampling Enabled
+
+**File:** `ztc-span-metrics-Tracestate-Sampling-Enabled.json`
+
+Visualizes z/OS telemetry data when the **Tracestate Sampling** feature is enabled in the Telemetry Controller. Use this dashboard to measure workload volume reduction and compare span rates before and after sampling.
+
+The dashboard includes:
+
+- **Overview** — Active SYSPLEX, LPAR, and service counts.
+- **Volume Comparison** — Current overall volume reduction percentage and total span rate comparisons before and after sampling.
+- **Volume Reduction % Trends** — Breakdown of volume reduction percentages over time across LPAR, SYSPLEX, Subsystem, and Services.
+- **Span Rate Trends** — Before and after sampling comparisons by LPAR, Sysplex, Subsystem, and Service.
+- **Error Metrics** — Error rate percentage gauge and error rates over time by service.
+
+---
+
+### ZTC Span Metrics with Volume Control Enabled
+
+**File:** `ztc-span-metrics-Volume-Control-Enabled.json`
+
+Visualizes z/OS telemetry data when the **Volume Control** feature is enabled in the Telemetry Controller. Use this dashboard to monitor span filtering and verify volume reduction across your mainframe workloads.
+
+The dashboard includes:
+
+- **Overview** — Active SYSPLEX, LPAR, and service counts.
+- **Volume Comparison** — Current overall volume reduction percentage and total span rate comparisons before and after volume control filtering.
+- **Volume Reduction % Trends** — Breakdown of volume reduction percentages over time across LPAR, SYSPLEX, Subsystem, and Services.
+- **Span Rate Trends** — Before and after volume control comparisons by LPAR, Sysplex, Subsystem, and Service.
 
 ---
 
