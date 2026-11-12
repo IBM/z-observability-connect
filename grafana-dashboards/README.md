@@ -436,7 +436,6 @@ The dashboard includes:
 - **Volume Comparison** — Current overall volume reduction percentage and total span rate comparisons before and after sampling.
 - **Volume Reduction % Trends** — Breakdown of volume reduction percentages over time across LPAR, SYSPLEX, Subsystem, and Services.
 - **Span Rate Trends** — Before and after sampling comparisons by LPAR, Sysplex, Subsystem, and Service.
-- **Error Metrics** — Error rate percentage gauge and error rates over time by service.
 
 ---
 
