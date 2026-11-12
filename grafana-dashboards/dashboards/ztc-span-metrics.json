@@ -455,16 +455,6 @@
           "legendFormat": "Total Span Rate",
           "range": true,
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "sum(rate(vc_traces_span_metrics_calls_total{zos_sysplex=~\"$sysplex|^$\", zos_sysplex_name=~\"$sysplex|^$\", mainframe_lpar_name=~\"$lpar\", service_name=~\"$service\"}[max($__rate_interval,2m)]))",
-          "legendFormat": "Span Rate after Volume Control (VC)",
-          "range": true,
-          "refId": "B"
         }
       ],
       "title": "Total Span Rate",
